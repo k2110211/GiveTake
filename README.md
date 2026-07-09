@@ -1,58 +1,187 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎁 GiveTake — Nền tảng chia sẻ đồ dùng cộng đồng
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+GiveTake là ứng dụng web cho phép người dùng đăng tin tặng / trao đổi đồ dùng trong cộng đồng, kết hợp hệ thống Karma và Trust Score để xây dựng lòng tin giữa các thành viên.
 
-## About Laravel
+**Stack:** Laravel 13 · Livewire 3 · Tailwind CSS · MySQL · Docker (Laravel Sail)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## ✨ Tính năng chính
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+| Tính năng | Mô tả |
+|-----------|-------|
+| 🏠 Trang khám phá | Duyệt và lọc món đồ theo danh mục, thành phố |
+| 📦 Đăng tin | Upload nhiều ảnh, chọn địa điểm động (Tỉnh/Quận) |
+| 📋 Chi tiết món đồ | Xem thông tin và gửi lời xin đồ |
+| 📊 Dashboard | Quản lý tin đăng và yêu cầu nhận/từ chối |
+| 💬 Chat Room | Nhắn tin giữa 2 bên sau khi được chấp thuận |
+| ⭐ Đánh giá & Karma | Review sau giao dịch, cộng điểm Karma & Trust Score |
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🚀 Cài đặt trên máy mới
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### Yêu cầu
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows/Mac) hoặc Docker Engine (Linux)
+- Git
 
-## Agentic Development
+> Không cần cài PHP hay Composer trên máy — Docker lo hết!
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+---
+
+### Bước 1 — Clone repo
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+git clone https://github.com/k2110211/k2110211.git GiveTake
+cd GiveTake
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+### Bước 2 — Tạo file `.env`
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cp .env.example .env
+```
 
-## Code of Conduct
+Mở `.env` và đảm bảo các dòng sau đúng:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```env
+APP_NAME=GiveTake
+DB_DATABASE=givetake
+DB_USERNAME=sail
+DB_PASSWORD=password
+```
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Bước 3 — Cài Composer dependencies
 
-## License
+Dùng Docker để chạy Composer (không cần PHP trên máy):
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Linux / macOS:**
+```bash
+docker run --rm \
+  -u "$(id -u):$(id -g)" \
+  -v "$(pwd):/var/www/html" \
+  -w /var/www/html \
+  laravelsail/php84-composer:latest \
+  composer install --ignore-platform-reqs
+```
+
+**Windows PowerShell:**
+```powershell
+docker run --rm `
+  -v "${PWD}:/var/www/html" `
+  -w /var/www/html `
+  laravelsail/php84-composer:latest `
+  composer install --ignore-platform-reqs
+```
+
+---
+
+### Bước 4 — Khởi động Sail (Docker)
+
+```bash
+./vendor/bin/sail up -d
+```
+
+> Lần đầu sẽ mất **3–5 phút** để pull và build Docker image. Các lần sau sẽ nhanh hơn nhiều.
+
+---
+
+### Bước 5 — Cấu hình ứng dụng
+
+```bash
+# Tạo app key
+./vendor/bin/sail artisan key:generate
+
+# Chạy migration và seed dữ liệu mẫu
+./vendor/bin/sail artisan migrate --seed
+
+# Tạo symbolic link cho storage (ảnh upload)
+./vendor/bin/sail artisan storage:link
+```
+
+---
+
+### Bước 6 — Build frontend assets
+
+```bash
+./vendor/bin/sail npm install
+./vendor/bin/sail npm run build
+```
+
+---
+
+### Bước 7 — Mở ứng dụng
+
+Truy cập: **http://localhost:8000**
+
+Tài khoản mẫu (sau khi seed):
+- Email: `giver@example.com` / Password: `password`
+- Email: `requester@example.com` / Password: `password`
+
+---
+
+## ⚡ Lệnh thường dùng
+
+```bash
+./vendor/bin/sail up -d          # Bật app
+./vendor/bin/sail down           # Tắt app
+./vendor/bin/sail artisan migrate  # Chạy migration mới
+./vendor/bin/sail test           # Chạy test suite (58 tests)
+./vendor/bin/sail npm run dev    # Chạy Vite dev server (hot reload)
+```
+
+---
+
+## 🧪 Kiểm thử
+
+```bash
+./vendor/bin/sail test
+```
+
+```
+Tests:    58 passed
+Assertions: 164
+```
+
+---
+
+## 📁 Cấu trúc chính
+
+```
+app/
+  Livewire/
+    Home.php           # Trang khám phá
+    ItemDetail.php     # Chi tiết món đồ
+    PostItem.php       # Đăng tin mới
+    Dashboard.php      # Quản lý tin & yêu cầu
+    ChatRoom.php       # Phòng chat
+    SubmitReview.php   # Đánh giá giao dịch
+  Models/
+    Item.php · ItemRequest.php · ChatRoom.php
+    ChatMessage.php · Review.php · User.php
+database/
+  migrations/          # 8 migrations
+  seeders/             # Dữ liệu mẫu
+```
+
+---
+
+## 🔄 Flow hoạt động
+
+```
+Đăng tin → Duyệt trang Home → Xem chi tiết → Gửi yêu cầu
+    → Chủ đồ chấp thuận (Dashboard) → ChatRoom tự tạo
+        → Chat để sắp xếp → Cả 2 đánh giá
+            → Trust Score cập nhật · Karma +10 · Status = completed
+```
+
+---
+
+## 📄 License
+
+MIT
