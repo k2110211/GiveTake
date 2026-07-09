@@ -18,7 +18,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // Seed default categories
+        // ─── Admin Account ───────────────────────────────────────────────
+        User::factory()->create([
+            'name'         => 'GiveTake Admin',
+            'email'        => 'admin@givetake.vn',
+            'password'     => bcrypt('password'),
+            'phone'        => '0900000000',
+            'city'         => 'Hồ Chí Minh',
+            'district'     => 'Quận 1',
+            'karma_points' => 999,
+            'trust_score'  => 5.0,
+            'is_admin'     => true,
+            'is_banned'    => false,
+        ]);
+ 
+        // ─── Default Categories ──────────────────────────────────────────
+
         $categoriesData = [
             'Clothing & Fashion',
             'Electronics & Gadgets',

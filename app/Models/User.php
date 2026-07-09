@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password', 'phone', 'city', 'district', 'karma_points', 'trust_score'])]
+#[Fillable(['name', 'email', 'password', 'phone', 'city', 'district', 'karma_points', 'trust_score', 'is_admin', 'is_banned'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -27,6 +27,16 @@ class User extends Authenticatable
     public function receivedReviews(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Review::class, 'reviewee_id');
+    }
+ 
+    public function isAdmin(): bool
+    {
+        return (bool) $this->is_admin;
+    }
+ 
+    public function isBanned(): bool
+    {
+        return (bool) $this->is_banned;
     }
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
