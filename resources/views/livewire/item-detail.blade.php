@@ -1,4 +1,4 @@
-<div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
+<div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen" x-data="{ activeImage: @js(!empty($item->images) && isset($item->images[0]) ? $item->images[0] : null), showLightbox: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Breadcrumbs -->
@@ -9,10 +9,11 @@
             <span class="mx-2">/</span>
             <span class="text-gray-900 dark:text-gray-100 truncate max-w-[200px]">{{ $item->title }}</span>
         </nav>
- 
+
         <!-- Flash Messages -->
         @if (session()->has('success'))
-            <div class="mb-8 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-800 dark:text-emerald-300 flex items-start shadow-sm">
+            <div class="mb-8 p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 text-emerald-800 dark:text-emerald-300 flex items-start shadow-sm"
+                 x-init="window.showToast('{{ session('success') }}', 'success')">
                 <svg class="w-5 h-5 mr-3 text-emerald-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
@@ -22,9 +23,10 @@
                 </div>
             </div>
         @endif
- 
+
         @if (session()->has('error'))
-            <div class="mb-8 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-800 dark:text-rose-300 flex items-start shadow-sm">
+            <div class="mb-8 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 text-rose-800 dark:text-rose-300 flex items-start shadow-sm"
+                 x-init="window.showToast('{{ session('error') }}', 'error')">
                 <svg class="w-5 h-5 mr-3 text-rose-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
@@ -34,42 +36,54 @@
                 </div>
             </div>
         @endif
- 
+
         <!-- Main Product Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden reveal">
             
             <!-- Left Column: Gallery / Images -->
-            <div class="lg:col-span-7 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-700 flex flex-col justify-between">
-                <div class="relative w-full rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800">
-                    <div class="aspect-video w-full relative">
-                        @if(!empty($item->images) && isset($item->images[0]))
-                            <img src="{{ $item->images[0] }}" alt="{{ $item->title }}" class="absolute inset-0 w-full h-full object-cover">
-                        @else
+            <div class="lg:col-span-7 p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-gray-100 dark:border-gray-700 flex flex-col">
+                <div class="relative w-full rounded-2xl overflow-hidden bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 flex items-center justify-center">
+                    <div class="aspect-[4/3] w-full relative group cursor-zoom-in" @click="if(activeImage) showLightbox = true">
+                        <template x-if="activeImage">
+                            <img :src="activeImage" alt="{{ $item->title }}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-102 transition-transform duration-300">
+                        </template>
+                        <template x-if="!activeImage">
                             <div class="absolute inset-0 flex items-center justify-center text-gray-400">
                                 Không có hình ảnh sản phẩm
                             </div>
-                        @endif
+                        </template>
+                        <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span class="px-4 py-2 bg-black/60 backdrop-blur-sm text-white rounded-xl text-xs font-semibold flex items-center">
+                                <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                Click để phóng to
+                            </span>
+                        </div>
                     </div>
                 </div>
- 
+
                 @if(!empty($item->images) && count($item->images) > 1)
                     <div class="grid grid-cols-4 gap-4 mt-6">
                         @foreach($item->images as $img)
-                            <div class="relative aspect-video rounded-xl overflow-hidden border border-gray-100 dark:border-gray-700 cursor-pointer hover:opacity-85 transition-opacity">
+                            <div class="relative aspect-[4/3] rounded-xl overflow-hidden border transition-all duration-200"
+                                 :class="activeImage === '{{ $img }}' ? 'border-teal-500 ring-2 ring-teal-200 dark:ring-teal-900/50' : 'border-gray-100 dark:border-gray-700 hover:border-gray-300 cursor-pointer'"
+                                 @click="activeImage = '{{ $img }}'">
                                 <img src="{{ $img }}" alt="Thumbnail" class="absolute inset-0 w-full h-full object-cover">
                             </div>
                         @endforeach
                     </div>
                 @endif
- 
-                <div class="mt-8 bg-gray-50 dark:bg-gray-900 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
-                    <h3 class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-3">Mô tả sản phẩm</h3>
+
+                <div class="mt-8 bg-gray-50 dark:bg-gray-900/50 rounded-2xl p-6 border border-gray-100 dark:border-gray-800">
+                    <h3 class="text-sm font-bold text-gray-900 dark:text-gray-100 uppercase tracking-wider mb-3 flex items-center">
+                        <span class="w-1.5 h-4 bg-teal-500 rounded-full mr-2"></span>
+                        Mô tả sản phẩm
+                    </h3>
                     <p class="text-sm text-gray-600 dark:text-gray-400 whitespace-pre-line leading-relaxed">
                         {{ $item->description }}
                     </p>
                 </div>
             </div>
- 
+
             <!-- Right Column: Details & Owner -->
             <div class="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between">
                 <div>
@@ -81,26 +95,26 @@
                         
                         <div>
                             @if($item->status === 'available')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500 text-white shadow-sm">
                                     Còn sẵn
                                 </span>
                             @elseif($item->status === 'reserved')
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500 text-white shadow-sm">
                                     Đã hẹn tặng
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-750 dark:text-gray-300">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500 text-white shadow-sm">
                                     Đã hoàn thành
                                 </span>
                             @endif
                         </div>
                     </div>
- 
+
                     <!-- Title -->
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-4 tracking-tight leading-tight">
                         {{ $item->title }}
                     </h1>
- 
+
                     <!-- Details Card -->
                     <div class="grid grid-cols-2 gap-4 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-6">
                         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
@@ -115,7 +129,7 @@
                                 </span>
                             @endif
                         </div>
- 
+
                         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
                             <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider block mb-1">Khu vực</span>
                             <span class="text-sm font-bold text-gray-800 dark:text-gray-200 block truncate">
@@ -123,7 +137,7 @@
                             </span>
                         </div>
                     </div>
- 
+
                     <!-- Exchange Wish List -->
                     @if($item->type === 'exchange' && $item->exchange_wish)
                         <div class="mb-6 bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 p-4 rounded-2xl">
@@ -138,13 +152,13 @@
                             </p>
                         </div>
                     @endif
- 
+
                     <!-- Giver Card -->
                     <div class="bg-gray-50 dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 mb-8">
                         <h4 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">Thông tin người đăng</h4>
                         <div class="flex items-center space-x-4">
                             <!-- Avatar -->
-                            <div class="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center font-bold text-teal-800 dark:text-teal-200 text-lg shadow-sm border border-white dark:border-gray-800">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center font-bold text-white text-lg shadow-md border border-white dark:border-gray-800">
                                 {{ substr($item->user->name, 0, 1) }}
                             </div>
                             <!-- Details -->
@@ -172,7 +186,7 @@
                         </div>
                     </div>
                 </div>
- 
+
                 <!-- Call to Action Buttons -->
                 <div class="mt-6">
                     @if($item->status !== 'available')
@@ -191,7 +205,7 @@
                             Đã gửi yêu cầu (Đang chờ duyệt)
                         </button>
                     @else
-                        <button wire:click="openRequestModal" class="w-full py-4 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-md transition-all text-center">
+                        <button wire:click="openRequestModal" class="w-full py-4 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all text-center">
                             @if($item->type === 'give')
                                 Nhận miễn phí món đồ này
                             @else
@@ -201,16 +215,16 @@
                     @endif
                 </div>
             </div>
- 
+
         </div>
     </div>
- 
+
     <!-- Request Modal Overlay -->
     @if($showRequestModal)
-        <div class="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center p-4 sm:p-6">
+        <div class="fixed inset-0 overflow-y-auto z-50 flex items-center justify-center p-4 sm:p-6" x-data x-init="document.body.classList.add('overflow-hidden')" x-effect="if(!$wire.showRequestModal) document.body.classList.remove('overflow-hidden')">
             <!-- Backdrop -->
             <div wire:click="$set('showRequestModal', false)" class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"></div>
- 
+
             <!-- Modal Box -->
             <div class="relative bg-white dark:bg-gray-800 rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-100 dark:border-gray-700 z-10 transform transition-all">
                 <div class="flex items-center justify-between mb-6">
@@ -226,7 +240,7 @@
                         </svg>
                     </button>
                 </div>
- 
+
                 <form wire:submit.prevent="submitRequest">
                     <div class="mb-6">
                         <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
@@ -248,7 +262,7 @@
                             <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> 
                         @enderror
                     </div>
- 
+
                     <div class="flex justify-end gap-3 border-t border-gray-100 dark:border-gray-700/50 pt-5">
                         <button type="button" wire:click="$set('showRequestModal', false)" class="px-5 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors">
                             Hủy bỏ
@@ -261,5 +275,12 @@
             </div>
         </div>
     @endif
- 
+
+    <!-- Image Lightbox Overlay -->
+    <div x-show="showLightbox" class="lightbox-overlay" @click.self="showLightbox = false" x-cloak>
+        <button class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors" @click="showLightbox = false">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+        <img :src="activeImage" alt="Zoomed view" class="lightbox-image" />
+    </div>
 </div>

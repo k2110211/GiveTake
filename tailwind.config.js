@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -12,7 +13,11 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['"Be Vietnam Pro"', ...defaultTheme.fontFamily.sans],
+            },
+            animation: {
+                'float': 'float 3s ease-in-out infinite',
+                'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
             },
         },
     },

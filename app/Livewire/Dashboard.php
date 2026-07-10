@@ -10,6 +10,13 @@ use Livewire\Component;
 class Dashboard extends Component
 {
     public $activeTab = 'my-items';
+
+    public function mount()
+    {
+        if (auth()->check() && auth()->user()->is_admin) {
+            return $this->redirect(route('admin.dashboard'), navigate: true);
+        }
+    }
  
     public function approveRequest($requestId)
     {
