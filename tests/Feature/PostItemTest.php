@@ -45,7 +45,7 @@ class PostItemTest extends TestCase
                 'categoryId' => 'required',
                 'city' => 'required',
                 'district' => 'required',
-                'images' => 'required'
+                'thumbnail' => 'required'
             ]);
     }
  
@@ -73,7 +73,8 @@ class PostItemTest extends TestCase
         
         $this->actingAs($user);
  
-        $file = UploadedFile::fake()->image('jacket.jpg');
+        $thumbFile = UploadedFile::fake()->image('thumbnail.jpg');
+        $descFile = UploadedFile::fake()->image('jacket.jpg');
  
         Livewire::test(PostItem::class)
             ->set('title', 'Áo khoác gió hiệu Uniqlo')
@@ -82,7 +83,8 @@ class PostItemTest extends TestCase
             ->set('type', 'give')
             ->set('city', $city->id)
             ->set('district', $district->id)
-            ->set('images', [$file])
+            ->set('thumbnail', $thumbFile)
+            ->set('images', [$descFile])
             ->call('save')
             ->assertHasNoErrors();
  
@@ -90,10 +92,14 @@ class PostItemTest extends TestCase
         $this->assertNotNull($item);
         $this->assertEquals('Áo khoác gió hiệu Uniqlo', $item->title);
         $this->assertEquals($user->id, $item->user_id);
+        $this->assertNotNull($item->thumbnail);
         $this->assertCount(1, $item->images);
         
-        // Assert storage has the file
-        $fileName = basename($item->images[0]);
-        Storage::disk('public')->assertExists('items/' . $fileName);
+        // Assert storage has the files
+        $thumbFileName = basename($item->thumbnail);
+        Storage::disk('public')->assertExists('items/' . $thumbFileName);
+        
+        $descFileName = basename($item->images[0]);
+        Storage::disk('public')->assertExists('items/' . $descFileName);
     }
 }

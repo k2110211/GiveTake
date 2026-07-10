@@ -16,6 +16,7 @@ class Item extends Model
         'category_id',
         'title',
         'description',
+        'thumbnail',
         'images',
         'type',
         'exchange_wish',

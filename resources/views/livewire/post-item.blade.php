@@ -55,43 +55,72 @@
                     Hình ảnh sản phẩm <span class="text-rose-500 ml-1">*</span>
                 </h3>
  
-                <div class="space-y-4">
-                    <!-- Dropzone -->
-                    <div class="relative border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl p-6 sm:p-10 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 hover:border-teal-400 transition-colors cursor-pointer group">
-                        <input type="file" id="images" wire:model="images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
-                        <svg class="w-10 h-10 text-gray-400 group-hover:text-teal-500 transition-colors mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
-                        </svg>
-                        <p class="text-sm font-bold text-gray-700 dark:text-gray-300">Nhấp để tải ảnh lên</p>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Hỗ trợ tối đa 5 ảnh, định dạng JPG, PNG, WEBP (tối đa 2MB mỗi ảnh)</p>
-                    </div>
- 
-                    <!-- Livewire Upload Loading -->
-                    <div wire:loading wire:target="images" class="w-full text-center py-2 text-xs text-teal-600 dark:text-teal-400 font-semibold">
-                        <span class="inline-block animate-bounce mr-1">⚡</span> Đang tải ảnh lên hệ thống, vui lòng chờ...
-                    </div>
- 
-                    @error('images') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
-                    @error('images.*') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
- 
-                    <!-- Image Previews -->
-                    @if (!empty($images))
-                        <div class="grid grid-cols-5 gap-4 pt-4 border-t border-gray-50 dark:border-gray-700/50">
-                            @foreach ($images as $key => $image)
-                                @if (method_exists($image, 'temporaryUrl'))
-                                    <div class="relative aspect-square rounded-2xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-sm">
-                                        <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="absolute inset-0 w-full h-full object-cover">
-                                        <button type="button" wire:click="$set('images.{{ $key }}', null)" class="absolute top-1 right-1 bg-black/60 backdrop-blur-sm hover:bg-rose-600 text-white rounded-full p-1 shadow-sm transition-all">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                                            </svg>
-                                        </button>
-                                    </div>
-                                @endif
-                            @endforeach
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- 2.1 Main Thumbnail Upload -->
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Ảnh đại diện chính <span class="text-rose-500">*</span></label>
+                        <div class="relative border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl p-6 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 hover:border-teal-400 transition-colors cursor-pointer group min-h-[140px]">
+                            <input type="file" id="thumbnail" wire:model="thumbnail" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <svg class="w-8 h-8 text-gray-400 group-hover:text-teal-500 transition-colors mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">Tải ảnh đại diện lên</p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Hình ảnh chính hiển thị ở trang chủ</p>
                         </div>
-                    @endif
+                        <div wire:loading wire:target="thumbnail" class="text-xs text-teal-600 dark:text-teal-400 font-semibold text-center">
+                            Đang tải ảnh đại diện lên...
+                        </div>
+                        @error('thumbnail') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+
+                        <!-- Thumbnail Preview -->
+                        @if ($thumbnail && method_exists($thumbnail, 'temporaryUrl'))
+                            <div class="relative w-32 h-32 rounded-2xl overflow-hidden border border-gray-150 dark:border-gray-700 shadow-sm mx-auto">
+                                <img src="{{ $thumbnail->temporaryUrl() }}" alt="Thumbnail preview" class="w-full h-full object-cover">
+                                <button type="button" wire:click="$set('thumbnail', null)" class="absolute top-1.5 right-1.5 bg-black/60 backdrop-blur-sm hover:bg-rose-600 text-white rounded-full p-1 shadow-sm transition-all">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        @endif
+                    </div>
+
+                    <!-- 2.2 Description Images Upload -->
+                    <div class="space-y-4">
+                        <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Ảnh mô tả bổ sung (Tối đa 3 ảnh)</label>
+                        <div class="relative border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-3xl p-6 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 hover:border-teal-400 transition-colors cursor-pointer group min-h-[140px]">
+                            <input type="file" id="images" wire:model="images" multiple class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            <svg class="w-8 h-8 text-gray-400 group-hover:text-teal-500 transition-colors mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            </svg>
+                            <p class="text-xs font-bold text-gray-700 dark:text-gray-300">Tải ảnh mô tả thêm</p>
+                            <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">Tối đa 3 ảnh phụ làm chi tiết album</p>
+                        </div>
+                        <div wire:loading wire:target="images" class="text-xs text-teal-600 dark:text-teal-400 font-semibold text-center">
+                            Đang tải ảnh mô tả lên...
+                        </div>
+                        @error('images') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+                        @error('images.*') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+
+                        <!-- Description Previews -->
+                        @if (!empty($images))
+                            <div class="flex flex-wrap gap-3 justify-center pt-2">
+                                @foreach ($images as $key => $image)
+                                    @if ($image && method_exists($image, 'temporaryUrl'))
+                                        <div class="relative w-20 h-20 rounded-xl overflow-hidden border border-gray-150 dark:border-gray-700 shadow-sm">
+                                            <img src="{{ $image->temporaryUrl() }}" alt="Preview" class="w-full h-full object-cover">
+                                            <button type="button" wire:click="$set('images.{{ $key }}', null)" class="absolute top-1 right-1 bg-black/60 backdrop-blur-sm hover:bg-rose-600 text-white rounded-full p-0.5 shadow-sm transition-all">
+                                                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
  

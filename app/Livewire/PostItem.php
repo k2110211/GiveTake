@@ -18,6 +18,7 @@ class PostItem extends Component
     public $exchangeWish = '';
     public $city = '';
     public $district = '';
+    public $thumbnail;
     public $images = [];
  
     public function updatedCity()
@@ -35,7 +36,8 @@ class PostItem extends Component
             'exchangeWish' => 'required_if:type,exchange|nullable|string|max:200',
             'city' => 'required|exists:cities,id',
             'district' => 'required|exists:districts,id',
-            'images' => 'required|array|min:1|max:5',
+            'thumbnail' => 'required|image|max:2048', // 1 main thumbnail image, max 2MB
+            'images' => 'nullable|array|max:3', // max 3 optional description images
             'images.*' => 'image|max:2048' // max 2MB
         ];
     }
@@ -58,11 +60,12 @@ class PostItem extends Component
             'city.exists' => 'Tỉnh / thành phố không hợp lệ.',
             'district.required' => 'Vui lòng chọn quận / huyện.',
             'district.exists' => 'Quận / huyện không hợp lệ.',
-            'images.required' => 'Vui lòng đăng ít nhất 1 hình ảnh sản phẩm.',
-            'images.min' => 'Vui lòng đăng ít nhất 1 hình ảnh sản phẩm.',
-            'images.max' => 'Bạn chỉ được đăng tối đa 5 hình ảnh.',
+            'thumbnail.required' => 'Vui lòng tải lên 1 hình ảnh đại diện chính.',
+            'thumbnail.image' => 'Tệp tải lên phải là hình ảnh (jpg, png, jpeg...).',
+            'thumbnail.max' => 'Hình ảnh đại diện không được vượt quá 2MB.',
+            'images.max' => 'Bạn chỉ được đăng tối đa 3 hình ảnh mô tả bổ sung.',
             'images.*.image' => 'Tệp tải lên phải là hình ảnh (jpg, png, jpeg, webp...).',
-            'images.*.max' => 'Mỗi hình ảnh không được vượt quá 2MB.'
+            'images.*.max' => 'Mỗi hình ảnh mô tả không được vượt quá 2MB.'
         ];
     }
  
@@ -70,10 +73,19 @@ class PostItem extends Component
     {
         $this->validate();
  
+        // Save main thumbnail image
+        $thumbnailPath = $this->thumbnail->store('items', 'public');
+        $thumbnailUrl = asset('storage/' . $thumbnailPath);
+
+        // Save description images
         $imagePaths = [];
-        foreach ($this->images as $image) {
-            $path = $image->store('items', 'public');
-            $imagePaths[] = asset('storage/' . $path);
+        if ($this->images) {
+            foreach ($this->images as $image) {
+                if ($image) {
+                    $path = $image->store('items', 'public');
+                    $imagePaths[] = asset('storage/' . $path);
+                }
+            }
         }
  
         $item = Item::create([
@@ -81,6 +93,7 @@ class PostItem extends Component
             'category_id' => $this->categoryId,
             'title' => $this->title,
             'description' => $this->description,
+            'thumbnail' => $thumbnailUrl,
             'images' => $imagePaths,
             'type' => $this->type,
             'exchange_wish' => $this->type === 'exchange' ? $this->exchangeWish : null,

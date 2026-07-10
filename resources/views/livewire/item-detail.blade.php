@@ -1,4 +1,4 @@
-<div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen" x-data="{ activeImage: @js(!empty($item->images) && isset($item->images[0]) ? $item->images[0] : null), showLightbox: false }">
+<div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen" x-data="{ activeImage: @js($item->thumbnail), showLightbox: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <!-- Breadcrumbs -->
@@ -61,9 +61,12 @@
                     </div>
                 </div>
 
-                @if(!empty($item->images) && count($item->images) > 1)
+                @php
+                    $gallery = array_filter(array_merge([$item->thumbnail], $item->images ?? []));
+                @endphp
+                @if(count($gallery) > 1)
                     <div class="grid grid-cols-4 gap-4 mt-6">
-                        @foreach($item->images as $img)
+                        @foreach($gallery as $img)
                             <div class="relative aspect-[4/3] rounded-xl overflow-hidden border transition-all duration-200"
                                  :class="activeImage === '{{ $img }}' ? 'border-teal-500 ring-2 ring-teal-200 dark:ring-teal-900/50' : 'border-gray-100 dark:border-gray-700 hover:border-gray-300 cursor-pointer'"
                                  @click="activeImage = '{{ $img }}'">

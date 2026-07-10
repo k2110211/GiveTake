@@ -113,8 +113,8 @@
                                     <div class="p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-gray-100 dark:border-gray-800">
                                         <div class="flex items-center space-x-4">
                                             <div class="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 relative flex-shrink-0">
-                                                @if(!empty($item->images) && isset($item->images[0]))
-                                                    <img src="{{ $item->images[0] }}" alt="Item thumbnail" class="absolute inset-0 w-full h-full object-cover">
+                                                @if($item->thumbnail)
+                                                    <img src="{{ $item->thumbnail }}" alt="Item thumbnail" class="absolute inset-0 w-full h-full object-cover">
                                                 @endif
                                             </div>
                                             <div>
@@ -231,8 +231,8 @@
                                     <!-- Item Summary -->
                                     <div class="flex items-center space-x-4">
                                         <div class="w-16 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800 relative flex-shrink-0">
-                                            @if(!empty($req->item->images) && isset($req->item->images[0]))
-                                                <img src="{{ $req->item->images[0] }}" alt="Item thumbnail" class="absolute inset-0 w-full h-full object-cover">
+                                            @if($req->item->thumbnail)
+                                                <img src="{{ $req->item->thumbnail }}" alt="Item thumbnail" class="absolute inset-0 w-full h-full object-cover">
                                             @endif
                                         </div>
                                         <div>
