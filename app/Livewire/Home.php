@@ -31,13 +31,6 @@ class Home extends Component
         $this->readyToLoad = true;
     }
  
-    // Define cities and districts data
-    public static $locations = [
-        'Hồ Chí Minh' => ['Quận 1', 'Quận 3', 'Quận 10', 'Bình Thạnh', 'Thủ Đức'],
-        'Hà Nội' => ['Cầu Giấy', 'Đống Đa', 'Ba Đình', 'Hoàn Kiếm', 'Hai Bà Trưng'],
-        'Đà Nẵng' => ['Hải Châu', 'Thanh Khê', 'Sơn Trà', 'Liên Chiểu', 'Ngũ Hành Sơn']
-    ];
- 
     public function updatedSearch()
     {
         $this->resetPage();
@@ -73,7 +66,8 @@ class Home extends Component
     public function render()
     {
         $categories = Category::all();
-        $districts = $this->city ? (self::$locations[$this->city] ?? []) : [];
+        $cities = \App\Models\City::all();
+        $districts = $this->city ? \App\Models\District::where('city_id', $this->city)->get() : collect();
 
         // Count stats for counters
         $totalItems = Item::count();
@@ -81,7 +75,7 @@ class Home extends Component
         $totalCompleted = Item::where('status', 'completed')->count();
 
         if ($this->readyToLoad) {
-            $query = Item::with(['category', 'user'])
+            $query = Item::with(['category', 'user', 'city', 'district'])
                 ->where('status', 'available');
 
             if ($this->search) {
@@ -100,11 +94,11 @@ class Home extends Component
             }
 
             if ($this->city) {
-                $query->where('city', $this->city);
+                $query->where('city_id', $this->city);
             }
 
             if ($this->district) {
-                $query->where('district', $this->district);
+                $query->where('district_id', $this->district);
             }
 
             $items = $query->latest()->paginate(6);
@@ -116,7 +110,7 @@ class Home extends Component
             'items' => $items,
             'categories' => $categories,
             'districts' => $districts,
-            'cities' => array_keys(self::$locations),
+            'cities' => $cities,
             'totalItems' => $totalItems,
             'totalUsers' => $totalUsers,
             'totalCompleted' => $totalCompleted

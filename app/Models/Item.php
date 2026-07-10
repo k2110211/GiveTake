@@ -20,8 +20,8 @@ class Item extends Model
         'type',
         'exchange_wish',
         'status',
-        'city',
-        'district'
+        'city_id',
+        'district_id'
     ];
 
     protected $casts = [
@@ -36,6 +36,16 @@ class Item extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
+    public function district(): BelongsTo
+    {
+        return $this->belongsTo(District::class);
     }
 
     public function requests(): HasMany

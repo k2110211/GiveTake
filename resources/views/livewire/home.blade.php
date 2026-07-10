@@ -112,7 +112,7 @@
                             <select wire:model.live="city" class="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:border-teal-500 focus:ring focus:ring-teal-200 dark:text-gray-300 transition-colors">
                                 <option value="">Tất cả Tỉnh/Thành</option>
                                 @foreach($cities as $c)
-                                    <option value="{{ $c }}">{{ $c }}</option>
+                                    <option value="{{ $c->id }}">{{ $c->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -124,7 +124,7 @@
                                 <select wire:model.live="district" class="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:border-teal-500 focus:ring focus:ring-teal-200 dark:text-gray-300 transition-colors">
                                     <option value="">Tất cả Quận/Huyện</option>
                                     @foreach($districts as $d)
-                                        <option value="{{ $d }}">{{ $d }}</option>
+                                        <option value="{{ $d->id }}">{{ $d->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -260,7 +260,7 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
                                             </svg>
-                                            <span class="truncate">{{ $item->district }}, {{ $item->city }}</span>
+                                            <span class="truncate">{{ $item->district?->name }}, {{ $item->city?->name }}</span>
                                         </div>
 
                                         <!-- User/Owner Section & Button -->

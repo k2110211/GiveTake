@@ -33,8 +33,8 @@ class PostItem extends Component
             'categoryId' => 'required|exists:categories,id',
             'type' => 'required|in:give,exchange',
             'exchangeWish' => 'required_if:type,exchange|nullable|string|max:200',
-            'city' => 'required|string',
-            'district' => 'required|string',
+            'city' => 'required|exists:cities,id',
+            'district' => 'required|exists:districts,id',
             'images' => 'required|array|min:1|max:5',
             'images.*' => 'image|max:2048' // max 2MB
         ];
@@ -55,7 +55,9 @@ class PostItem extends Component
             'type.in' => 'Hình thức chọn không hợp lệ.',
             'exchangeWish.required_if' => 'Vui lòng nhập mong muốn nhận lại khi chọn hình thức trao đổi.',
             'city.required' => 'Vui lòng chọn tỉnh / thành phố.',
+            'city.exists' => 'Tỉnh / thành phố không hợp lệ.',
             'district.required' => 'Vui lòng chọn quận / huyện.',
+            'district.exists' => 'Quận / huyện không hợp lệ.',
             'images.required' => 'Vui lòng đăng ít nhất 1 hình ảnh sản phẩm.',
             'images.min' => 'Vui lòng đăng ít nhất 1 hình ảnh sản phẩm.',
             'images.max' => 'Bạn chỉ được đăng tối đa 5 hình ảnh.',
@@ -83,8 +85,8 @@ class PostItem extends Component
             'type' => $this->type,
             'exchange_wish' => $this->type === 'exchange' ? $this->exchangeWish : null,
             'status' => 'available',
-            'city' => $this->city,
-            'district' => $this->district
+            'city_id' => $this->city,
+            'district_id' => $this->district
         ]);
  
         session()->flash('success', 'Món đồ đã được đăng tải thành công!');
@@ -94,12 +96,13 @@ class PostItem extends Component
     public function render()
     {
         $categories = Category::all();
-        $districts = $this->city ? (Home::$locations[$this->city] ?? []) : [];
+        $cities = \App\Models\City::all();
+        $districts = $this->city ? \App\Models\District::where('city_id', $this->city)->get() : collect();
  
         return view('livewire.post-item', [
             'categories' => $categories,
             'districts' => $districts,
-            'cities' => array_keys(Home::$locations)
+            'cities' => $cities
         ])->layout('layouts.app');
     }
 }

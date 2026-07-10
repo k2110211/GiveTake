@@ -133,7 +133,7 @@
                         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
                             <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider block mb-1">Khu vực</span>
                             <span class="text-sm font-bold text-gray-800 dark:text-gray-200 block truncate">
-                                {{ $item->district }}, {{ $item->city }}
+                                {{ $item->district?->name }}, {{ $item->city?->name }}
                             </span>
                         </div>
                     </div>

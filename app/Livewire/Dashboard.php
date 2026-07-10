@@ -77,13 +77,13 @@ class Dashboard extends Component
         $user = auth()->user();
  
         // My items with their incoming requests
-        $myItems = Item::with(['category', 'requests.user', 'requests.chatRoom'])
+        $myItems = Item::with(['category', 'requests.user', 'requests.chatRoom', 'city', 'district'])
             ->where('user_id', $user->id)
             ->latest()
             ->get();
  
         // Requests I've sent
-        $sentRequests = ItemRequest::with(['item.user', 'item.category', 'chatRoom'])
+        $sentRequests = ItemRequest::with(['item.user', 'item.category', 'item.city', 'item.district', 'chatRoom'])
             ->where('user_id', $user->id)
             ->latest()
             ->get();

@@ -68,6 +68,8 @@ class PostItemTest extends TestCase
  
         $user = User::factory()->create();
         $category = Category::create(['name' => 'Clothing', 'slug' => 'clothing']);
+        $city = \App\Models\City::create(['name' => 'Hồ Chí Minh']);
+        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Quận 1']);
         
         $this->actingAs($user);
  
@@ -78,8 +80,8 @@ class PostItemTest extends TestCase
             ->set('description', 'Áo khoác gió hiệu Uniqlo màu xanh navy, phù hợp mặc trời lạnh nhẹ.')
             ->set('categoryId', $category->id)
             ->set('type', 'give')
-            ->set('city', 'Hồ Chí Minh')
-            ->set('district', 'Quận 1')
+            ->set('city', $city->id)
+            ->set('district', $district->id)
             ->set('images', [$file])
             ->call('save')
             ->assertHasNoErrors();

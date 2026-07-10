@@ -18,6 +18,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // ─── Seed Cities & Districts ─────────────────────────────────────
+        $locationsData = [
+            'Hồ Chí Minh' => ['Quận 1', 'Quận 3', 'Quận 10', 'Bình Thạnh', 'Thủ Đức'],
+            'Hà Nội' => ['Cầu Giấy', 'Đống Đa', 'Ba Đình', 'Hoàn Kiếm', 'Hai Bà Trưng'],
+            'Đà Nẵng' => ['Hải Châu', 'Thanh Khê', 'Sơn Trà', 'Liên Chiểu', 'Ngũ Hành Sơn']
+        ];
+
+        $citiesMap = [];
+        $districtsMap = [];
+
+        foreach ($locationsData as $cityName => $districts) {
+            $cityObj = \App\Models\City::create(['name' => $cityName]);
+            $citiesMap[$cityName] = $cityObj->id;
+            
+            foreach ($districts as $districtName) {
+                $districtObj = \App\Models\District::create([
+                    'city_id' => $cityObj->id,
+                    'name' => $districtName
+                ]);
+                $districtsMap[$cityName . '_' . $districtName] = $districtObj->id;
+            }
+        }
+
         // ─── Admin Account ───────────────────────────────────────────────
         User::factory()->create([
             'name'         => 'GiveTake Admin',
@@ -31,9 +54,8 @@ class DatabaseSeeder extends Seeder
             'is_admin'     => true,
             'is_banned'    => false,
         ]);
- 
+  
         // ─── Default Categories ──────────────────────────────────────────
-
         $categoriesData = [
             'Clothing & Fashion',
             'Electronics & Gadgets',
@@ -43,7 +65,7 @@ class DatabaseSeeder extends Seeder
             'Sports & Outdoors',
             'Other Items'
         ];
- 
+  
         $categories = [];
         foreach ($categoriesData as $cat) {
             $categories[$cat] = Category::create([
@@ -51,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 'slug' => Str::slug($cat)
             ]);
         }
- 
+  
         // Seed some test users
         $userA = User::factory()->create([
             'name' => 'Nguyễn Văn A',
@@ -63,7 +85,7 @@ class DatabaseSeeder extends Seeder
             'karma_points' => 100,
             'trust_score' => 4.8,
         ]);
- 
+  
         $userB = User::factory()->create([
             'name' => 'Trần Thị B',
             'email' => 'userB@example.com',
@@ -74,7 +96,7 @@ class DatabaseSeeder extends Seeder
             'karma_points' => 50,
             'trust_score' => 4.5,
         ]);
- 
+  
         $userC = User::factory()->create([
             'name' => 'Lê Văn C',
             'email' => 'userC@example.com',
@@ -85,7 +107,7 @@ class DatabaseSeeder extends Seeder
             'karma_points' => 75,
             'trust_score' => 4.6,
         ]);
- 
+  
         // Seed mock items
         Item::create([
             'user_id' => $userA->id,
@@ -96,10 +118,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'give',
             'exchange_wish' => null,
             'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Quận 1'
+            'city_id' => $citiesMap['Hồ Chí Minh'],
+            'district_id' => $districtsMap['Hồ Chí Minh_Quận 1']
         ]);
- 
+  
         Item::create([
             'user_id' => $userA->id,
             'category_id' => $categories['Electronics & Gadgets']->id,
@@ -109,10 +131,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'exchange',
             'exchange_wish' => 'Muốn đổi lấy truyện tranh Conan trọn bộ hoặc sách văn học cũ.',
             'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Bình Thạnh'
+            'city_id' => $citiesMap['Hồ Chí Minh'],
+            'district_id' => $districtsMap['Hồ Chí Minh_Bình Thạnh']
         ]);
- 
+  
         Item::create([
             'user_id' => $userB->id,
             'category_id' => $categories['Books & Stationery']->id,
@@ -122,10 +144,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'give',
             'exchange_wish' => null,
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'city_id' => $citiesMap['Hà Nội'],
+            'district_id' => $districtsMap['Hà Nội_Cầu Giấy']
         ]);
- 
+  
         Item::create([
             'user_id' => $userB->id,
             'category_id' => $categories['Home & Kitchen']->id,
@@ -135,10 +157,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'exchange',
             'exchange_wish' => 'Đổi lấy bàn ủi (bàn là) quần áo hoạt động tốt.',
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Đống Đa'
+            'city_id' => $citiesMap['Hà Nội'],
+            'district_id' => $districtsMap['Hà Nội_Đống Đa']
         ]);
- 
+  
         Item::create([
             'user_id' => $userC->id,
             'category_id' => $categories['Toys & Baby Care']->id,
@@ -148,10 +170,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'give',
             'exchange_wish' => null,
             'status' => 'available',
-            'city' => 'Đà Nẵng',
-            'district' => 'Hải Châu'
+            'city_id' => $citiesMap['Đà Nẵng'],
+            'district_id' => $districtsMap['Đà Nẵng_Hải Châu']
         ]);
- 
+  
         Item::create([
             'user_id' => $userC->id,
             'category_id' => $categories['Sports & Outdoors']->id,
@@ -161,10 +183,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'exchange',
             'exchange_wish' => 'Đổi lấy balo đi học cũ hoặc vợt bóng bàn.',
             'status' => 'available',
-            'city' => 'Đà Nẵng',
-            'district' => 'Sơn Trà'
+            'city_id' => $citiesMap['Đà Nẵng'],
+            'district_id' => $districtsMap['Đà Nẵng_Sơn Trà']
         ]);
- 
+  
         Item::create([
             'user_id' => $userA->id,
             'category_id' => $categories['Other Items']->id,
@@ -174,10 +196,10 @@ class DatabaseSeeder extends Seeder
             'type' => 'give',
             'exchange_wish' => null,
             'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Thủ Đức'
+            'city_id' => $citiesMap['Hồ Chí Minh'],
+            'district_id' => $districtsMap['Hồ Chí Minh_Thủ Đức']
         ]);
- 
+  
         Item::create([
             'user_id' => $userB->id,
             'category_id' => $categories['Books & Stationery']->id,
@@ -187,8 +209,8 @@ class DatabaseSeeder extends Seeder
             'type' => 'give',
             'exchange_wish' => null,
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Hoàn Kiếm'
+            'city_id' => $citiesMap['Hà Nội'],
+            'district_id' => $districtsMap['Hà Nội_Hoàn Kiếm']
         ]);
     }
 }

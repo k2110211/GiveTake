@@ -21,7 +21,7 @@ class ItemDetail extends Component
     #[Computed]
     public function item()
     {
-        return Item::with(['user', 'category', 'requests'])->findOrFail($this->itemId);
+        return Item::with(['user', 'category', 'requests', 'city', 'district'])->findOrFail($this->itemId);
     }
  
     #[Computed]

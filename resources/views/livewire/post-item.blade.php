@@ -150,7 +150,7 @@
                         <select id="city" wire:model.live="city" class="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:border-teal-500 focus:ring focus:ring-teal-200 dark:text-gray-300">
                             <option value="">-- Chọn Tỉnh / Thành --</option>
                             @foreach($cities as $c)
-                                <option value="{{ $c }}">{{ $c }}</option>
+                                <option value="{{ $c->id }}">{{ $c->name }}</option>
                             @endforeach
                         </select>
                         @error('city') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
@@ -162,7 +162,7 @@
                         <select id="district" wire:model="district" @if(!$city) disabled @endif class="w-full rounded-xl border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 text-sm focus:border-teal-500 focus:ring focus:ring-teal-200 dark:text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed">
                             <option value="">-- Chọn Quận / Huyện --</option>
                             @foreach($districts as $d)
-                                <option value="{{ $d }}">{{ $d }}</option>
+                                <option value="{{ $d->id }}">{{ $d->name }}</option>
                             @endforeach
                         </select>
                         @error('district') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
