@@ -109,6 +109,10 @@ class SubmitReview extends Component
         }
  
         $this->showModal = false;
+        unset($this->hasReviewed);
+        unset($this->itemRequest);
+        unset($this->reviewee);
+
         session()->flash('review_success', 'Đánh giá của bạn đã được ghi nhận! Cảm ơn bạn đã tham gia cộng đồng chia sẻ.');
     }
  

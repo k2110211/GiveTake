@@ -85,6 +85,9 @@ class ItemDetail extends Component
         ]);
  
         $this->showRequestModal = false;
+        unset($this->hasRequested);
+        unset($this->item);
+
         session()->flash('success', 'Yêu cầu của bạn đã được gửi thành công! Người tặng sẽ xem xét và phản hồi bạn.');
     }
  
