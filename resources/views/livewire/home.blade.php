@@ -92,6 +92,37 @@
         @endif
     </div>
 
+    <!-- Stats & Trust Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-3xl p-6 sm:p-8 shadow-sm">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto"
+                 x-data="{ shown: false }"
+                 x-intersect.once="shown = true">
+                <div class="text-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400"
+                         x-data="{ count: 0, target: {{ $totalItems ?? 0 }} }"
+                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
+                         x-text="count">0</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Món đồ đăng tải</div>
+                </div>
+                <div class="text-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400"
+                         x-data="{ count: 0, target: {{ $totalUsers ?? 0 }} }"
+                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
+                         x-text="count">0</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Thành viên tích cực</div>
+                </div>
+                <div class="text-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400"
+                         x-data="{ count: 0, target: {{ $totalCompleted ?? 0 }} }"
+                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
+                         x-text="count">0</div>
+                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Món đồ đã tìm thấy chủ mới</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Category Grid Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
         <div class="text-center max-w-xl mx-auto mb-10">
@@ -128,44 +159,6 @@
                     </div>
                 </a>
             @endforeach
-        </div>
-    </div>
-
-    <!-- Stats & Trust Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-3xl p-8 sm:p-12 shadow-sm text-center">
-            <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-gray-100 mb-2">
-                Cộng đồng chia sẻ của chúng ta
-            </h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-8 leading-relaxed">
-                Được vận hành bởi chính tinh thần tự nguyện và chia sẻ của các thành viên. Hãy cùng đóng góp vào phong cách sống xanh.
-            </p>
-
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-4xl mx-auto"
-                 x-data="{ shown: false }"
-                 x-intersect.once="shown = true">
-                <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400"
-                         x-data="{ count: 0, target: {{ $totalItems ?? 0 }} }"
-                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
-                         x-text="count">0</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Món đồ đăng tải</div>
-                </div>
-                <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400"
-                         x-data="{ count: 0, target: {{ $totalUsers ?? 0 }} }"
-                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
-                         x-text="count">0</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Thành viên tích cực</div>
-                </div>
-                <div class="p-6 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
-                    <div class="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400"
-                         x-data="{ count: 0, target: {{ $totalCompleted ?? 0 }} }"
-                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
-                         x-text="count">0</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Món đồ đã tìm thấy chủ mới</div>
-                </div>
-            </div>
         </div>
     </div>
 </div>
