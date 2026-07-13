@@ -34,14 +34,23 @@ new class extends Component
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="/" wire:navigate class="flex items-center space-x-2 group">
-                        <div class="w-9 h-9 bg-gradient-to-br from-teal-400 to-emerald-600 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-all duration-200 group-hover:scale-105">
-                            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                        <div class="w-10 h-10 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 rounded-xl flex items-center justify-center shadow-md shadow-teal-500/20 group-hover:shadow-teal-500/40 transition-all duration-300 group-hover:scale-105">
+                            <!-- Share loop heart SVG -->
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" 
+                                      d="M8 11a4 4 0 018 0m-8 0v-2m8 2v2m-8-2h8"/>
                             </svg>
                         </div>
-                        <span class="text-gray-900 dark:text-white font-extrabold text-lg tracking-tight hidden sm:inline">
-                            Give<span class="text-teal-600 dark:text-teal-400">&</span>Take
-                        </span>
+                        <div class="flex flex-col">
+                            <span class="text-gray-900 dark:text-white font-extrabold text-base tracking-tight leading-none">
+                                Give<span class="text-teal-500 dark:text-teal-400">&</span>Take
+                            </span>
+                            <span class="text-[9px] text-gray-500 dark:text-gray-400 font-semibold tracking-wider uppercase mt-0.5 leading-none hidden sm:inline">
+                                Trao & Nhận
+                            </span>
+                        </div>
                     </a>
                 </div>
 
