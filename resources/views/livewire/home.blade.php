@@ -1,25 +1,67 @@
 <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen">
-    <!-- Hero Slider Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        @if($newsList->isEmpty())
-            <!-- Fallback Banner if no news -->
-            <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 text-white p-8 sm:p-12 shadow-xl min-h-[300px] flex items-center">
-                <div class="relative z-10 max-w-2xl">
-                    <span class="bg-white/20 backdrop-blur-md text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full text-white mb-4 inline-block">
-                        Cộng Đồng Chia Sẻ Đồ Cũ
-                    </span>
-                    <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-                        Give & Take — Cho Đi Là Nhận Lại
-                    </h1>
-                    <p class="text-sm sm:text-base text-emerald-100 leading-relaxed mb-6">
-                        Nền tảng giúp bạn trao tặng những món đồ không dùng tới hoặc trao đổi lấy những gì bạn đang cần. Hãy cùng nhau xây dựng lối sống xanh và sẻ chia!
-                    </p>
-                    <a href="/search" class="inline-flex items-center px-6 py-3 rounded-xl bg-white text-teal-800 font-bold shadow-md hover:bg-emerald-50 transition" wire:navigate>
-                        Khám phá sản phẩm
-                    </a>
+    <!-- Hero Banner Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 text-white p-8 sm:p-12 shadow-xl">
+            <!-- Animated background pattern -->
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-32 -left-20 w-80 h-80 bg-cyan-400/10 rounded-full blur-3xl"></div>
+
+            <div class="relative z-10 max-w-2xl">
+                <span class="bg-white/20 backdrop-blur-md text-[10px] sm:text-xs font-semibold tracking-widest uppercase px-3 py-1 rounded-full text-white mb-4 inline-block">
+                    Cộng Đồng Chia Sẻ Đồ Cũ
+                </span>
+                <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
+                    Give & Take — Cho Đi Là Nhận Lại
+                </h1>
+                <p class="text-sm sm:text-base text-emerald-100 mb-6 leading-relaxed">
+                    Nền tảng giúp bạn trao tặng những món đồ không dùng tới hoặc trao đổi lấy những gì bạn đang cần. Hãy cùng nhau xây dựng lối sống xanh và sẻ chia!
+                </p>
+                <div class="flex flex-wrap gap-4">
+                    @auth
+                        <a href="/dashboard" class="bg-white text-teal-800 font-bold px-6 py-3 rounded-xl shadow-md hover:bg-emerald-50 hover:shadow-lg transition-all duration-200 text-sm">
+                            Đăng tin chia sẻ ngay
+                        </a>
+                    @else
+                        <a href="{{ route('register') }}" class="bg-white text-teal-800 font-bold px-6 py-3 rounded-xl shadow-md hover:bg-emerald-50 hover:shadow-lg transition-all duration-200 text-sm">
+                            Tham gia cộng đồng
+                        </a>
+                    @endauth
                 </div>
             </div>
-        @else
+
+            <!-- Animated Stats in Hero -->
+            <div class="relative z-10 mt-8 grid grid-cols-3 gap-4 max-w-lg"
+                 x-data="{ shown: false }"
+                 x-intersect.once="shown = true">
+                <div class="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-3">
+                    <div class="text-2xl sm:text-3xl font-extrabold counter-value"
+                         x-data="{ count: 0, target: {{ $totalItems ?? 0 }} }"
+                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
+                         x-text="count">0</div>
+                    <div class="text-[10px] sm:text-xs text-emerald-200 font-medium mt-0.5">Món đồ</div>
+                </div>
+                <div class="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-3">
+                    <div class="text-2xl sm:text-3xl font-extrabold counter-value"
+                         x-data="{ count: 0, target: {{ $totalUsers ?? 0 }} }"
+                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
+                         x-text="count">0</div>
+                    <div class="text-[10px] sm:text-xs text-emerald-200 font-medium mt-0.5">Thành viên</div>
+                </div>
+                <div class="text-center bg-white/10 backdrop-blur-sm rounded-2xl p-3">
+                    <div class="text-2xl sm:text-3xl font-extrabold counter-value"
+                         x-data="{ count: 0, target: {{ $totalCompleted ?? 0 }} }"
+                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
+                         x-text="count">0</div>
+                    <div class="text-[10px] sm:text-xs text-emerald-200 font-medium mt-0.5">Đã trao đổi</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Slider Section -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+        @if(!$newsList->isEmpty())
             <!-- Alpine News Slider -->
             <div class="relative rounded-3xl overflow-hidden shadow-xl bg-gray-950 text-white aspect-[21/9] sm:min-h-[400px] group"
                  x-data="{ 
@@ -90,40 +132,6 @@
                 </div>
             </div>
         @endif
-    </div>
-
-    <!-- Stats & Trust Section -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 text-white p-6 sm:p-8 shadow-xl">
-            <!-- Animated background pattern -->
-            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-            
-            <div class="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto"
-                 x-data="{ shown: false }"
-                 x-intersect.once="shown = true">
-                <div class="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white"
-                         x-data="{ count: 0, target: {{ $totalItems ?? 0 }} }"
-                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
-                         x-text="count">0</div>
-                    <div class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mt-2">Món đồ đăng tải</div>
-                </div>
-                <div class="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white"
-                         x-data="{ count: 0, target: {{ $totalUsers ?? 0 }} }"
-                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
-                         x-text="count">0</div>
-                    <div class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mt-2">Thành viên tích cực</div>
-                </div>
-                <div class="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-white"
-                         x-data="{ count: 0, target: {{ $totalCompleted ?? 0 }} }"
-                         x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
-                         x-text="count">0</div>
-                    <div class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mt-2">Món đồ đã tìm thấy chủ mới</div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Category Grid Section -->
