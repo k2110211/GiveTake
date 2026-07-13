@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // ─── Admin Account ───────────────────────────────────────────────
-        User::factory()->create([
+        $admin = User::factory()->create([
             'name'         => 'GiveTake Admin',
             'email'        => 'admin@givetake.vn',
             'password'     => bcrypt('password'),
@@ -57,22 +57,51 @@ class DatabaseSeeder extends Seeder
   
         // ─── Default Categories ──────────────────────────────────────────
         $categoriesData = [
-            'Clothing & Fashion',
-            'Electronics & Gadgets',
-            'Books & Stationery',
-            'Home & Kitchen',
-            'Toys & Baby Care',
-            'Sports & Outdoors',
-            'Other Items'
+            'Clothing & Fashion' => 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80',
+            'Electronics & Gadgets' => 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=400&q=80',
+            'Books & Stationery' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80',
+            'Home & Kitchen' => 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=400&q=80',
+            'Toys & Baby Care' => 'https://images.unsplash.com/photo-1539627831859-a911cf04d3cd?auto=format&fit=crop&w=400&q=80',
+            'Sports & Outdoors' => 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=400&q=80',
+            'Other Items' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80'
         ];
   
         $categories = [];
-        foreach ($categoriesData as $cat) {
+        foreach ($categoriesData as $cat => $image) {
             $categories[$cat] = Category::create([
                 'name' => $cat,
-                'slug' => Str::slug($cat)
+                'slug' => Str::slug($cat),
+                'image' => $image
             ]);
         }
+
+        // ─── Default News ────────────────────────────────────────────────
+        \App\Models\News::create([
+            'title' => 'Chương trình Quyên góp sách giáo khoa cũ niên khoá 2026',
+            'slug' => Str::slug('Chương trình Quyên góp sách giáo khoa cũ niên khoá 2026'),
+            'summary' => 'Chung tay giúp đỡ các em học sinh có hoàn cảnh khó khăn bước vào năm học mới bằng cách chia sẻ những bộ sách cũ của bạn.',
+            'content' => 'Hàng năm, hàng triệu cuốn sách giáo khoa cũ bị lãng phí sau mỗi mùa tựu trường. Nhằm lan tỏa tinh thần tiết kiệm và tương thân tương ái, cộng đồng GiveTake chính thức khởi động chiến dịch "Sách cũ nâng bước tương lai". Quý thành viên có sách giáo khoa lớp 1 đến lớp 12 không sử dụng nữa có thể đăng tin chia sẻ lên hệ thống hoặc gửi về các điểm tiếp nhận chính thức của chúng tôi. Mỗi cuốn sách được trao đi là một niềm hy vọng được thắp sáng!',
+            'image' => 'https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=800&q=80',
+            'user_id' => $admin->id
+        ]);
+
+        \App\Models\News::create([
+            'title' => 'Cập nhật tính năng Đăng tin chia đôi Ảnh đại diện & Mô tả',
+            'slug' => Str::slug('Cập nhật tính năng Đăng tin chia đôi Ảnh đại diện và Mô tả'),
+            'summary' => 'Hệ thống vừa cập nhật giao diện giúp người dùng phân loại ảnh bìa hiển thị và album mô tả phụ tiện lợi.',
+            'content' => 'Lắng nghe phản hồi từ các thành viên tích cực, ban quản trị GiveTake đã chính thức ra mắt tính năng đăng tin với cơ chế phân tách ảnh. Bây giờ, khi đăng tin mới, bạn có thể chọn riêng một hình ảnh đẹp nhất làm Ảnh đại diện chính (để thu hút sự chú ý ngoài trang chủ) và tải thêm tối đa 3 ảnh phụ để mô tả chi tiết tình trạng của đồ dùng. Tính năng này hứa hẹn sẽ mang đến trải nghiệm duyệt tin mượt mà và trực quan hơn.',
+            'image' => 'https://images.unsplash.com/photo-1542744094-3a31f103e35f?auto=format&fit=crop&w=800&q=80',
+            'user_id' => $admin->id
+        ]);
+
+        \App\Models\News::create([
+            'title' => 'Cảnh báo lừa đảo phí vận chuyển và quy tắc an toàn',
+            'slug' => Str::slug('Cảnh báo lừa đảo phí vận chuyển và quy tắc an toàn'),
+            'summary' => 'Hãy bảo vệ bản thân và cộng đồng bằng cách tuân thủ nguyên tắc giao dịch trực tiếp hoặc sử dụng dịch vụ ship COD uy tín.',
+            'content' => 'Cộng đồng GiveTake hoạt động trên tinh thần sẻ chia phi lợi nhuận. Tuy nhiên, thời gian gần đây đã xuất hiện một số đối tượng lợi dụng lòng tốt để yêu cầu chuyển khoản trước tiền ship với giá cao rồi cắt đứt liên lạc. Chúng tôi khuyến cáo thành viên ưu tiên gặp mặt trực tiếp tại khu vực công cộng để giao nhận đồ hoặc thỏa thuận ship hàng qua các ứng dụng giao hàng uy tín có hỗ trợ thanh toán khi nhận hàng (COD). Tuyệt đối không chuyển khoản trước cho người lạ.',
+            'image' => 'https://images.unsplash.com/photo-1508847154043-be12a62861c1?auto=format&fit=crop&w=800&q=80',
+            'user_id' => $admin->id
+        ]);
   
         // Seed some test users
         $userA = User::factory()->create([

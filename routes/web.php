@@ -7,14 +7,19 @@ use App\Livewire\Admin\ReviewIndex;
 use App\Livewire\Admin\TransactionIndex;
 use App\Livewire\Admin\UserIndex;
 use App\Livewire\Admin\UserShow;
+use App\Livewire\Admin\NewsIndex as AdminNewsIndex;
 use App\Livewire\ChatRoom as ChatRoomComponent;
 use App\Livewire\Dashboard;
 use App\Livewire\Home;
 use App\Livewire\ItemDetail;
 use App\Livewire\PostItem;
+use App\Livewire\SearchItems;
+use App\Livewire\NewsDetail;
 use Illuminate\Support\Facades\Route;
  
 Route::get('/', Home::class)->name('home');
+Route::get('/search', SearchItems::class)->name('search');
+Route::get('/news/{id}', NewsDetail::class)->name('news.detail');
 Route::get('/items/create', PostItem::class)->middleware('auth')->name('item.create');
 Route::get('/items/{id}', ItemDetail::class)->name('item.detail');
  
@@ -44,6 +49,7 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('/users/{id}', UserShow::class)->name('users.show');
     Route::get('/items', ItemIndex::class)->name('items');
     Route::get('/categories', CategoryIndex::class)->name('categories');
+    Route::get('/news', AdminNewsIndex::class)->name('news');
     Route::get('/reviews', ReviewIndex::class)->name('reviews');
     Route::get('/transactions', TransactionIndex::class)->name('transactions');
 });

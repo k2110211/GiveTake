@@ -18,25 +18,27 @@ class HomeComponentTest extends TestCase
     {
         $this->get('/')
             ->assertStatus(200)
-            ->assertSee('Give & Take', false)
-            ->assertSee('Cho Đi Là Nhận Lại');
+            ->assertSee('Tìm kiếm theo danh mục');
     }
  
     public function test_can_filter_items_by_search_keyword(): void
     {
         $user = User::factory()->create();
         $category = Category::create(['name' => 'Books', 'slug' => 'books']);
+        $city = \App\Models\City::create(['name' => 'Hà Nội']);
+        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Cầu Giấy']);
         
         $item1 = Item::create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'title' => 'Math Book 10',
             'description' => 'A great math book',
+            'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
             'type' => 'give',
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'city_id' => $city->id,
+            'district_id' => $district->id
         ]);
  
         $item2 = Item::create([
@@ -44,14 +46,15 @@ class HomeComponentTest extends TestCase
             'category_id' => $category->id,
             'title' => 'Physics Book 10',
             'description' => 'A great physics book',
+            'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
             'type' => 'give',
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'city_id' => $city->id,
+            'district_id' => $district->id
         ]);
  
-        Livewire::test(Home::class)
+        Livewire::test(\App\Livewire\SearchItems::class)
             ->set('search', 'Math')
             ->assertSee('Math Book 10')
             ->assertDontSee('Physics Book 10');
@@ -61,17 +64,20 @@ class HomeComponentTest extends TestCase
     {
         $user = User::factory()->create();
         $category = Category::create(['name' => 'Books', 'slug' => 'books']);
+        $city = \App\Models\City::create(['name' => 'Hà Nội']);
+        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Cầu Giấy']);
         
         $item1 = Item::create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'title' => 'Give Item',
             'description' => 'A gift',
+            'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
             'type' => 'give',
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'city_id' => $city->id,
+            'district_id' => $district->id
         ]);
  
         $item2 = Item::create([
@@ -79,14 +85,15 @@ class HomeComponentTest extends TestCase
             'category_id' => $category->id,
             'title' => 'Exchange Item',
             'description' => 'An exchange',
+            'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
             'type' => 'exchange',
             'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'city_id' => $city->id,
+            'district_id' => $district->id
         ]);
  
-        Livewire::test(Home::class)
+        Livewire::test(\App\Livewire\SearchItems::class)
             ->set('type', 'give')
             ->assertSee('Give Item')
             ->assertDontSee('Exchange Item');
