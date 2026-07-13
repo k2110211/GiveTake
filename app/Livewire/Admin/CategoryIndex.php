@@ -18,7 +18,6 @@ class CategoryIndex extends Component
  
         Category::create([
             'name' => $this->name,
-            'slug' => \Illuminate\Support\Str::slug($this->name),
         ]);
  
         $this->name = '';
@@ -38,7 +37,6 @@ class CategoryIndex extends Component
         $cat = Category::findOrFail($this->editingId);
         $cat->update([
             'name' => $this->editName,
-            'slug' => \Illuminate\Support\Str::slug($this->editName),
         ]);
  
         $this->editingId = null;

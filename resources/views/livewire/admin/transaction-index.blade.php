@@ -38,9 +38,8 @@
                         <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ $request->item->user->name ?? '—' }}</td>
                         <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ $request->user->name ?? '—' }}</td>
                         <td class="px-4 py-3">
-                            <span class="text-xs px-2 py-0.5 rounded-full font-medium
-                                {{ $request->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ($request->status === 'approved' ? 'bg-teal-100 text-teal-700' : 'bg-red-100 text-red-700') }}">
-                                {{ $request->status }}
+                            <span class="text-xs px-2 py-0.5 rounded-full font-medium {{ $request->status->color ?? 'bg-gray-100 text-gray-700' }}">
+                                {{ $request->status->name }}
                             </span>
                         </td>
                         <td class="px-4 py-3 text-gray-400 text-xs hidden lg:table-cell">{{ $request->created_at->format('d/m/Y') }}</td>

@@ -135,28 +135,27 @@
                 <div>
                     <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Hình thức đăng bài <span class="text-rose-500">*</span></label>
                     <div class="grid grid-cols-2 gap-4">
-                        <label class="relative flex flex-col p-4 rounded-2xl border cursor-pointer focus:outline-none transition {{ $type === 'give' ? 'border-teal-500 bg-teal-50/10 ring-2 ring-teal-200' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50' }}">
-                            <input type="radio" name="type" value="give" wire:model.live="type" class="sr-only">
-                            <span class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center">
-                                <span class="w-2 h-2 rounded-full mr-2 {{ $type === 'give' ? 'bg-emerald-500' : 'bg-gray-300' }}"></span>
-                                Tặng miễn phí
-                            </span>
-                            <span class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">Cho đi không nhận lại điểm Karma tương ứng</span>
-                        </label>
- 
-                        <label class="relative flex flex-col p-4 rounded-2xl border cursor-pointer focus:outline-none transition {{ $type === 'exchange' ? 'border-teal-500 bg-teal-50/10 ring-2 ring-teal-200' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50' }}">
-                            <input type="radio" name="type" value="exchange" wire:model.live="type" class="sr-only">
-                            <span class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center">
-                                <span class="w-2 h-2 rounded-full mr-2 {{ $type === 'exchange' ? 'bg-orange-500' : 'bg-gray-300' }}"></span>
-                                Trao đổi đồ dùng
-                            </span>
-                            <span class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">Đề xuất trao đổi lấy một món đồ dùng khác</span>
-                        </label>
+                        @foreach($types as $t)
+                            <label class="relative flex flex-col p-4 rounded-2xl border cursor-pointer focus:outline-none transition {{ (int)$type === (int)$t->id ? 'border-teal-500 bg-teal-50/10 ring-2 ring-teal-200' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50' }}">
+                                <input type="radio" name="type" value="{{ $t->id }}" wire:model.live="type" class="sr-only">
+                                <span class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                                    <span class="w-2 h-2 rounded-full mr-2 {{ (int)$type === (int)$t->id ? 'bg-teal-500' : 'bg-gray-300' }}"></span>
+                                    {{ $t->name }}
+                                </span>
+                                <span class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">
+                                    @if($t->id == 1)
+                                        Cho đi không nhận lại điểm Karma tương ứng
+                                    @else
+                                        Đề xuất trao đổi lấy một món đồ dùng khác
+                                    @endif
+                                </span>
+                            </label>
+                        @endforeach
                     </div>
                 </div>
  
                 <!-- Exchange Wish -->
-                @if($type === 'exchange')
+                @if((int)$type === 2)
                     <div class="bg-orange-50/10 border border-orange-100 dark:border-orange-900/30 p-5 rounded-2xl animate-fadeIn">
                         <label for="exchangeWish" class="block text-xs font-bold text-orange-700 dark:text-orange-400 uppercase tracking-wider mb-2">Mong muốn nhận lại <span class="text-rose-500">*</span></label>
                         <textarea id="exchangeWish" wire:model="exchangeWish" rows="3" placeholder="Ví dụ: Mong muốn đổi lấy balo thể thao hoặc vợt bóng bàn còn dùng tốt..." class="w-full rounded-xl border-orange-200 dark:border-orange-900/40 bg-white dark:bg-gray-900 text-sm focus:border-orange-500 focus:ring focus:ring-orange-200 dark:text-gray-300 placeholder-gray-400"></textarea>

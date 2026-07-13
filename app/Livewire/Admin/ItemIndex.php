@@ -34,17 +34,17 @@ class ItemIndex extends Component
         session()->flash('success', 'Đã xóa món đồ.');
     }
  
-    public function forceStatus(int $id, string $status): void
+    public function forceStatus(int $id, int $statusId): void
     {
-        Item::findOrFail($id)->update(['status' => $status]);
+        Item::findOrFail($id)->update(['item_status_id' => $statusId]);
         session()->flash('success', 'Đã cập nhật trạng thái món đồ.');
     }
  
     public function render()
     {
-        $items = Item::with(['user', 'category'])
+        $items = Item::with(['user', 'category', 'status'])
             ->when($this->search, fn($q) => $q->where('title', 'like', "%{$this->search}%"))
-            ->when($this->filterStatus, fn($q) => $q->where('status', $this->filterStatus))
+            ->when($this->filterStatus, fn($q) => $q->where('item_status_id', $this->filterStatus))
             ->latest()
             ->paginate(20);
  

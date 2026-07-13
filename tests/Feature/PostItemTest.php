@@ -55,7 +55,7 @@ class PostItemTest extends TestCase
         $this->actingAs($user);
  
         Livewire::test(PostItem::class)
-            ->set('type', 'exchange')
+            ->set('type', 2)
             ->call('save')
             ->assertHasErrors([
                 'exchangeWish' => 'required_if'
@@ -67,9 +67,9 @@ class PostItemTest extends TestCase
         Storage::fake('public');
  
         $user = User::factory()->create();
-        $category = Category::create(['name' => 'Clothing', 'slug' => 'clothing']);
-        $city = \App\Models\City::create(['name' => 'Hồ Chí Minh']);
-        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Quận 1']);
+        $category = Category::create(['name' => 'Clothing']);
+        $city = \App\Models\City::firstOrCreate(['name' => 'Hồ Chí Minh']);
+        $district = \App\Models\District::firstOrCreate(['city_id' => $city->id, 'name' => 'Quận 1']);
         
         $this->actingAs($user);
  
@@ -80,7 +80,7 @@ class PostItemTest extends TestCase
             ->set('title', 'Áo khoác gió hiệu Uniqlo')
             ->set('description', 'Áo khoác gió hiệu Uniqlo màu xanh navy, phù hợp mặc trời lạnh nhẹ.')
             ->set('categoryId', $category->id)
-            ->set('type', 'give')
+            ->set('type', 1)
             ->set('city', $city->id)
             ->set('district', $district->id)
             ->set('thumbnail', $thumbFile)

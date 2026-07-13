@@ -57,12 +57,11 @@
                                 <button wire:click="$set('type', '')" class="py-2 text-[10px] font-bold rounded-xl transition-all duration-200 {{ $type === '' ? 'bg-teal-500 text-white shadow-sm scale-[1.02]' : 'bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100' }}">
                                     Tất cả
                                 </button>
-                                <button wire:click="$set('type', 'give')" class="py-2 text-[10px] font-bold rounded-xl transition-all duration-200 {{ $type === 'give' ? 'bg-emerald-500 text-white shadow-sm scale-[1.02]' : 'bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100' }}">
-                                    Tặng
-                                </button>
-                                <button wire:click="$set('type', 'exchange')" class="py-2 text-[10px] font-bold rounded-xl transition-all duration-200 {{ $type === 'exchange' ? 'bg-orange-500 text-white shadow-sm scale-[1.02]' : 'bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100' }}">
-                                    Đổi đồ
-                                </button>
+                                @foreach($typesList as $t)
+                                    <button wire:click="$set('type', '{{ $t->id }}')" class="py-2 text-[10px] font-bold rounded-xl transition-all duration-200 {{ (string)$type === (string)$t->id ? 'bg-emerald-500 text-white shadow-sm scale-[1.02]' : 'bg-gray-50 dark:bg-gray-900 text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700 hover:bg-gray-100' }}">
+                                        {{ $t->name }}
+                                    </button>
+                                @endforeach
                             </div>
                         </div>
 
@@ -143,15 +142,15 @@
 
                                     <!-- Badge Type -->
                                     <div class="absolute top-3 left-3">
-                                        @if($item->type === 'give')
+                                        @if($item->type_id == 1)
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-500/90 backdrop-blur-sm text-white shadow-sm">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
-                                                Tặng đồ
+                                                {{ $item->type->name }}
                                             </span>
                                         @else
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-orange-500/90 backdrop-blur-sm text-white shadow-sm">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
-                                                Đổi đồ
+                                                {{ $item->type->name }}
                                             </span>
                                         @endif
                                     </div>

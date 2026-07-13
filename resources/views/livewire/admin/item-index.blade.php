@@ -28,9 +28,9 @@
                class="flex-1 min-w-48 rounded-xl border-gray-200 text-sm focus:border-teal-500 focus:ring focus:ring-teal-200">
         <select wire:model.live="filterStatus" class="rounded-xl border-gray-200 text-sm focus:border-teal-500">
             <option value="">Tất cả trạng thái</option>
-            <option value="available">Available</option>
-            <option value="reserved">Reserved</option>
-            <option value="completed">Completed</option>
+            <option value="1">Có sẵn</option>
+            <option value="3">Đang trao đổi</option>
+            <option value="4">Hoàn thành</option>
         </select>
     </div>
  
@@ -51,16 +51,16 @@
                     <tr class="hover:bg-gray-50/50">
                         <td class="px-5 py-3">
                             <p class="font-medium text-gray-800">{{ Str::limit($item->title, 45) }}</p>
-                            <p class="text-xs text-gray-400">{{ $item->city }}</p>
+                            <p class="text-xs text-gray-400">{{ $item->city->name ?? "-" }}</p>
                         </td>
                         <td class="px-4 py-3 text-gray-600 hidden md:table-cell">{{ $item->user->name ?? '—' }}</td>
                         <td class="px-4 py-3 text-gray-500 hidden lg:table-cell">{{ $item->category->name ?? '—' }}</td>
                         <td class="px-4 py-3">
                             <select wire:change="forceStatus({{ $item->id }}, $event.target.value)"
                                     class="text-xs rounded-lg border-gray-200 py-1 focus:border-teal-500">
-                                <option value="available" {{ $item->status === 'available' ? 'selected' : '' }}>Available</option>
-                                <option value="reserved" {{ $item->status === 'reserved' ? 'selected' : '' }}>Reserved</option>
-                                <option value="completed" {{ $item->status === 'completed' ? 'selected' : '' }}>Completed</option>
+                                <option value="1" {{ $item->item_status_id == 1 ? 'selected' : '' }}>Có sẵn</option>
+                                <option value="3" {{ $item->item_status_id == 3 ? 'selected' : '' }}>Đang trao đổi</option>
+                                <option value="4" {{ $item->item_status_id == 4 ? 'selected' : '' }}>Hoàn thành</option>
                             </select>
                         </td>
                         <td class="px-5 py-3 text-right">

@@ -71,11 +71,10 @@
                     <li class="px-5 py-3 flex items-center justify-between">
                         <div class="min-w-0 flex-1">
                             <p class="text-sm font-medium text-gray-800 truncate">{{ $item->title }}</p>
-                            <p class="text-xs text-gray-400">{{ $item->user->name }} · {{ $item->city }}</p>
+                            <p class="text-xs text-gray-400">{{ $item->user->name }} · {{ $item->city->name }}</p>
                         </div>
-                        <span class="ml-3 text-xs px-2 py-0.5 rounded-full font-medium
-                            {{ $item->status === 'available' ? 'bg-teal-100 text-teal-700' : ($item->status === 'reserved' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700') }}">
-                            {{ $item->status }}
+                        <span class="ml-3 text-xs px-2 py-0.5 rounded-full font-medium {{ $item->status->color ?? 'bg-teal-50 text-teal-700 border border-teal-200' }}">
+                            {{ $item->status->name }}
                         </span>
                     </li>
                 @empty
@@ -97,9 +96,8 @@
                             <p class="text-sm font-medium text-gray-800 truncate">{{ $req->item->title ?? 'N/A' }}</p>
                             <p class="text-xs text-gray-400">từ {{ $req->user->name }}</p>
                         </div>
-                        <span class="ml-3 text-xs px-2 py-0.5 rounded-full font-medium
-                            {{ $req->status === 'pending' ? 'bg-yellow-100 text-yellow-700' : ($req->status === 'approved' ? 'bg-teal-100 text-teal-700' : 'bg-red-100 text-red-700') }}">
-                            {{ $req->status }}
+                        <span class="ml-3 text-xs px-2 py-0.5 rounded-full font-medium {{ $req->status->color ?? 'bg-yellow-50 text-yellow-700 border border-yellow-200' }}">
+                            {{ $req->status->name }}
                         </span>
                     </li>
                 @empty

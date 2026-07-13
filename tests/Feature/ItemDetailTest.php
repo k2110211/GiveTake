@@ -17,17 +17,17 @@ class ItemDetailTest extends TestCase
     public function test_item_detail_renders_successfully(): void
     {
         $user = User::factory()->create();
-        $category = Category::create(['name' => 'Fashion', 'slug' => 'fashion']);
+        $category = Category::create(['name' => 'Fashion']);
         $item = Item::create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'title' => 'Vintage Jacket',
             'description' => 'A very nice jacket in good condition.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Quận 1'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         $this->get('/items/' . $item->id)
@@ -39,17 +39,17 @@ class ItemDetailTest extends TestCase
     public function test_guest_user_is_redirected_on_clicking_request_button(): void
     {
         $user = User::factory()->create();
-        $category = Category::create(['name' => 'Fashion', 'slug' => 'fashion']);
+        $category = Category::create(['name' => 'Fashion']);
         $item = Item::create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'title' => 'Vintage Jacket',
             'description' => 'A very nice jacket in good condition.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Quận 1'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         Livewire::test(ItemDetail::class, ['id' => $item->id])
@@ -62,17 +62,17 @@ class ItemDetailTest extends TestCase
         $owner = User::factory()->create();
         $requester = User::factory()->create();
         
-        $category = Category::create(['name' => 'Fashion', 'slug' => 'fashion']);
+        $category = Category::create(['name' => 'Fashion']);
         $item = Item::create([
             'user_id' => $owner->id,
             'category_id' => $category->id,
             'title' => 'Vintage Jacket',
             'description' => 'A very nice jacket in good condition.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Quận 1'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         $this->actingAs($requester);
@@ -89,24 +89,24 @@ class ItemDetailTest extends TestCase
             'item_id' => $item->id,
             'user_id' => $requester->id,
             'message' => 'Hello, I really want to request this item for my son.',
-            'status' => 'pending'
+            'request_status_id' => 1
         ]);
     }
  
     public function test_user_cannot_request_own_item(): void
     {
         $owner = User::factory()->create();
-        $category = Category::create(['name' => 'Fashion', 'slug' => 'fashion']);
+        $category = Category::create(['name' => 'Fashion']);
         $item = Item::create([
             'user_id' => $owner->id,
             'category_id' => $category->id,
             'title' => 'Vintage Jacket',
             'description' => 'A very nice jacket in good condition.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hồ Chí Minh',
-            'district' => 'Quận 1'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         $this->actingAs($owner);

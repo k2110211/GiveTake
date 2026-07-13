@@ -38,31 +38,31 @@ class DashboardTest extends TestCase
         $requester1 = User::factory()->create();
         $requester2 = User::factory()->create();
  
-        $category = Category::create(['name' => 'Books', 'slug' => 'books']);
+        $category = Category::create(['name' => 'Books']);
         $item = Item::create([
             'user_id' => $owner->id,
             'category_id' => $category->id,
             'title' => 'Laravel Book',
             'description' => 'A comprehensive book on Laravel framework.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         $req1 = ItemRequest::create([
             'item_id' => $item->id,
             'user_id' => $requester1->id,
             'message' => 'I would love to learn Laravel from this book.',
-            'status' => 'pending'
+            'request_status_id' => 1
         ]);
  
         $req2 = ItemRequest::create([
             'item_id' => $item->id,
             'user_id' => $requester2->id,
             'message' => 'Please give me this book for my exam.',
-            'status' => 'pending'
+            'request_status_id' => 1
         ]);
  
         $this->actingAs($owner);
@@ -72,13 +72,13 @@ class DashboardTest extends TestCase
             ->assertHasNoErrors();
  
         // 1. Assert request is approved
-        $this->assertEquals('approved', $req1->refresh()->status);
+        $this->assertEquals(2, $req1->refresh()->request_status_id);
  
         // 2. Assert item is reserved
-        $this->assertEquals('reserved', $item->refresh()->status);
+        $this->assertEquals(3, $item->refresh()->item_status_id);
  
         // 3. Assert other request is rejected
-        $this->assertEquals('rejected', $req2->refresh()->status);
+        $this->assertEquals(3, $req2->refresh()->request_status_id);
  
         // 4. Assert chat room is created
         $this->assertDatabaseHas('chat_rooms', [
@@ -91,24 +91,24 @@ class DashboardTest extends TestCase
         $owner = User::factory()->create();
         $requester = User::factory()->create();
  
-        $category = Category::create(['name' => 'Books', 'slug' => 'books']);
+        $category = Category::create(['name' => 'Books']);
         $item = Item::create([
             'user_id' => $owner->id,
             'category_id' => $category->id,
             'title' => 'Laravel Book',
             'description' => 'A comprehensive book on Laravel framework.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         $req = ItemRequest::create([
             'item_id' => $item->id,
             'user_id' => $requester->id,
             'message' => 'I would love to learn Laravel from this book.',
-            'status' => 'pending'
+            'request_status_id' => 1
         ]);
  
         $this->actingAs($owner);
@@ -117,8 +117,8 @@ class DashboardTest extends TestCase
             ->call('rejectRequest', $req->id)
             ->assertHasNoErrors();
  
-        $this->assertEquals('rejected', $req->refresh()->status);
-        $this->assertEquals('available', $item->refresh()->status); // item should still be available
+        $this->assertEquals(3, $req->refresh()->request_status_id);
+        $this->assertEquals(1, $item->refresh()->item_status_id); // item should still be available
     }
  
     public function test_requester_can_cancel_request_successfully(): void
@@ -126,24 +126,24 @@ class DashboardTest extends TestCase
         $owner = User::factory()->create();
         $requester = User::factory()->create();
  
-        $category = Category::create(['name' => 'Books', 'slug' => 'books']);
+        $category = Category::create(['name' => 'Books']);
         $item = Item::create([
             'user_id' => $owner->id,
             'category_id' => $category->id,
             'title' => 'Laravel Book',
             'description' => 'A comprehensive book on Laravel framework.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy'
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
         ]);
  
         $req = ItemRequest::create([
             'item_id' => $item->id,
             'user_id' => $requester->id,
             'message' => 'I would love to learn Laravel from this book.',
-            'status' => 'pending'
+            'request_status_id' => 1
         ]);
  
         $this->actingAs($requester);

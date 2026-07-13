@@ -24,9 +24,9 @@ class HomeComponentTest extends TestCase
     public function test_can_filter_items_by_search_keyword(): void
     {
         $user = User::factory()->create();
-        $category = Category::create(['name' => 'Books', 'slug' => 'books']);
-        $city = \App\Models\City::create(['name' => 'Hà Nội']);
-        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Cầu Giấy']);
+        $category = Category::create(['name' => 'Books']);
+        $city = \App\Models\City::firstOrCreate(['name' => 'Hà Nội']);
+        $district = \App\Models\District::firstOrCreate(['city_id' => $city->id, 'name' => 'Cầu Giấy']);
         
         $item1 = Item::create([
             'user_id' => $user->id,
@@ -35,8 +35,8 @@ class HomeComponentTest extends TestCase
             'description' => 'A great math book',
             'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
+            'type_id' => 1,
+            'item_status_id' => 1,
             'city_id' => $city->id,
             'district_id' => $district->id
         ]);
@@ -48,8 +48,8 @@ class HomeComponentTest extends TestCase
             'description' => 'A great physics book',
             'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
+            'type_id' => 1,
+            'item_status_id' => 1,
             'city_id' => $city->id,
             'district_id' => $district->id
         ]);
@@ -63,9 +63,9 @@ class HomeComponentTest extends TestCase
     public function test_can_filter_items_by_type(): void
     {
         $user = User::factory()->create();
-        $category = Category::create(['name' => 'Books', 'slug' => 'books']);
-        $city = \App\Models\City::create(['name' => 'Hà Nội']);
-        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Cầu Giấy']);
+        $category = Category::create(['name' => 'Books']);
+        $city = \App\Models\City::firstOrCreate(['name' => 'Hà Nội']);
+        $district = \App\Models\District::firstOrCreate(['city_id' => $city->id, 'name' => 'Cầu Giấy']);
         
         $item1 = Item::create([
             'user_id' => $user->id,
@@ -74,8 +74,8 @@ class HomeComponentTest extends TestCase
             'description' => 'A gift',
             'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
-            'type' => 'give',
-            'status' => 'available',
+            'type_id' => 1,
+            'item_status_id' => 1,
             'city_id' => $city->id,
             'district_id' => $district->id
         ]);
@@ -87,14 +87,14 @@ class HomeComponentTest extends TestCase
             'description' => 'An exchange',
             'thumbnail' => 'http://placehold.co/100x100.jpg',
             'images' => [],
-            'type' => 'exchange',
-            'status' => 'available',
+            'type_id' => 2,
+            'item_status_id' => 1,
             'city_id' => $city->id,
             'district_id' => $district->id
         ]);
  
         Livewire::test(\App\Livewire\SearchItems::class)
-            ->set('type', 'give')
+            ->set('type', '1')
             ->assertSee('Give Item')
             ->assertDontSee('Exchange Item');
     }

@@ -21,9 +21,9 @@ class ItemDetail extends Component
     #[Computed]
     public function item()
     {
-        return Item::with(['user', 'category', 'requests', 'city', 'district'])->findOrFail($this->itemId);
+        return Item::with(['user', 'category', 'requests.status', 'city', 'district', 'type', 'status'])->findOrFail($this->itemId);
     }
- 
+
     #[Computed]
     public function hasRequested()
     {
@@ -34,41 +34,41 @@ class ItemDetail extends Component
             ->where('user_id', auth()->id())
             ->exists();
     }
- 
+
     public function openRequestModal()
     {
         if (!auth()->check()) {
             return $this->redirect(route('login'), navigate: true);
         }
- 
+
         if ($this->item->user_id === auth()->id()) {
             session()->flash('error', 'Bạn không thể xin đồ của chính mình!');
             return;
         }
- 
+
         if ($this->hasRequested) {
             session()->flash('error', 'Bạn đã gửi yêu cầu xin món đồ này rồi!');
             return;
         }
- 
+
         $this->message = '';
         $this->showRequestModal = true;
     }
- 
+
     public function submitRequest()
     {
         if (!auth()->check()) {
             return $this->redirect(route('login'), navigate: true);
         }
- 
+
         if ($this->item->user_id === auth()->id()) {
             return;
         }
- 
+
         if ($this->hasRequested) {
             return;
         }
- 
+
         $this->validate([
             'message' => 'required|string|min:10|max:500'
         ], [
@@ -76,14 +76,14 @@ class ItemDetail extends Component
             'message.min' => 'Lời nhắn phải có ít nhất 10 ký tự.',
             'message.max' => 'Lời nhắn không được vượt quá 500 ký tự.'
         ]);
- 
+
         ItemRequest::create([
             'item_id' => $this->item->id,
             'user_id' => auth()->id(),
             'message' => $this->message,
-            'status' => 'pending'
+            'request_status_id' => 1
         ]);
- 
+
         $this->showRequestModal = false;
         unset($this->hasRequested);
         unset($this->item);

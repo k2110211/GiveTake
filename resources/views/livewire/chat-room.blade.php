@@ -171,7 +171,7 @@
     </div>
  
     {{-- Review Section --}}
-    @if($room->itemRequest->status === 'approved' || $room->itemRequest->status === 'completed')
+    @if($room->itemRequest->request_status_id == 2 || $room->itemRequest->item->item_status_id == 4)
     <div class="bg-amber-50/50 dark:bg-amber-950/10 border-t border-dashed border-amber-200/50 dark:border-amber-900/20 px-4 sm:px-6 py-4 flex-shrink-0">
         <div class="max-w-3xl mx-auto">
             <p class="text-[10px] font-bold text-amber-600 dark:text-amber-500 uppercase tracking-wider mb-3">

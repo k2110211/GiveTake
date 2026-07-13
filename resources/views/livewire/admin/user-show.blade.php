@@ -106,11 +106,11 @@
                         <li class="px-5 py-3 flex justify-between items-center">
                             <div>
                                 <p class="text-sm font-medium text-gray-800">{{ $item->title }}</p>
-                                <p class="text-xs text-gray-400">{{ $item->category->name ?? '' }} · {{ $item->city }}</p>
+                                <p class="text-xs text-gray-400">{{ $item->category->name ?? '' }} · {{ $item->city->name ?? '\ }}</p>
                             </div>
                             <span class="text-xs px-2 py-0.5 rounded-full font-medium
-                                {{ $item->status === 'available' ? 'bg-teal-100 text-teal-700' : ($item->status === 'reserved' ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700') }}">
-                                {{ $item->status }}
+                                {{ $item->item_status_id == 1 ? 'bg-teal-100 text-teal-700' : (($item->item_status_id == 2 || $item->item_status_id == 3) ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700') }}">
+                                {{ $item->status->name }}
                             </span>
                         </li>
                     @empty

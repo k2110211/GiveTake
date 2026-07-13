@@ -97,17 +97,17 @@
                         </span>
                         
                         <div>
-                            @if($item->status === 'available')
+                            @if($item->item_status_id == 1)
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-500 text-white shadow-sm">
-                                    Còn sẵn
+                                    {{ $item->status->name }}
                                 </span>
-                            @elseif($item->status === 'reserved')
+                            @elseif($item->item_status_id == 2 || $item->item_status_id == 3)
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500 text-white shadow-sm">
-                                    Đã hẹn tặng
+                                    {{ $item->status->name }}
                                 </span>
                             @else
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-gray-500 text-white shadow-sm">
-                                    Đã hoàn thành
+                                    {{ $item->status->name }}
                                 </span>
                             @endif
                         </div>
@@ -122,13 +122,13 @@
                     <div class="grid grid-cols-2 gap-4 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-6">
                         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
                             <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider block mb-1">Hình thức</span>
-                            @if($item->type === 'give')
+                            @if($item->type_id == 1)
                                 <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
-                                    Tặng miễn phí
+                                    {{ $item->type->name }}
                                 </span>
                             @else
                                 <span class="text-sm font-bold text-orange-600 dark:text-orange-400 flex items-center">
-                                    Trao đổi đồ
+                                    {{ $item->type->name }}
                                 </span>
                             @endif
                         </div>
@@ -142,7 +142,7 @@
                     </div>
 
                     <!-- Exchange Wish List -->
-                    @if($item->type === 'exchange' && $item->exchange_wish)
+                    @if($item->type_id == 2 && $item->exchange_wish)
                         <div class="mb-6 bg-orange-50 dark:bg-orange-950/20 border border-orange-100 dark:border-orange-900/30 p-4 rounded-2xl">
                             <h4 class="text-xs font-bold text-orange-700 dark:text-orange-400 uppercase tracking-wider mb-2 flex items-center">
                                 <svg class="w-4 h-4 mr-1.5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,9 +192,9 @@
 
                 <!-- Call to Action Buttons -->
                 <div class="mt-6">
-                    @if($item->status !== 'available')
+                    @if($item->item_status_id != 1)
                         <button disabled class="w-full py-4 rounded-2xl text-sm font-bold text-gray-400 bg-gray-100 dark:bg-gray-700/50 dark:text-gray-500 cursor-not-allowed text-center">
-                            Món đồ này đã được trao đổi xong
+                            {{ $item->status->name }}
                         </button>
                     @elseif(auth()->check() && $item->user_id === auth()->id())
                         <div class="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 p-4 rounded-2xl text-center text-sm font-medium text-blue-800 dark:text-blue-300">
@@ -209,7 +209,7 @@
                         </button>
                     @else
                         <button wire:click="openRequestModal" class="w-full py-4 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all text-center">
-                            @if($item->type === 'give')
+                            @if($item->type_id == 1)
                                 Nhận miễn phí món đồ này
                             @else
                                 Gửi đề xuất trao đổi đồ
@@ -247,14 +247,14 @@
                 <form wire:submit.prevent="submitRequest">
                     <div class="mb-6">
                         <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
-                            @if($item->type === 'give')
+                            @if($item->type_id == 1)
                                 Lời nhắn xin đồ
                             @else
                                 Đề xuất trao đổi
                             @endif
                         </label>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mb-3 leading-normal">
-                            @if($item->type === 'give')
+                            @if($item->type_id == 1)
                                 Hãy giới thiệu ngắn gọn về bản thân và lý do bạn cần món đồ này để người tặng dễ dàng duyệt yêu cầu của bạn nhé.
                             @else
                                 Hãy mô tả chi tiết món đồ bạn muốn trao đổi lại (tình trạng, hình thức) và cách bạn muốn thực hiện cuộc giao lưu này.

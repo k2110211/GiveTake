@@ -73,7 +73,6 @@ class NewsIndex extends Component
             $news = News::findOrFail($this->editingId);
             $news->update([
                 'title' => $this->title,
-                'slug' => Str::slug($this->title),
                 'summary' => $this->summary,
                 'content' => $this->content,
                 'image' => $imageUrl,
@@ -82,7 +81,6 @@ class NewsIndex extends Component
         } else {
             News::create([
                 'title' => $this->title,
-                'slug' => Str::slug($this->title),
                 'summary' => $this->summary,
                 'content' => $this->content,
                 'image' => $imageUrl,

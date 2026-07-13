@@ -21,7 +21,7 @@ class ReviewTest extends TestCase
     {
         $giver = User::factory()->create(['karma_points' => 0, 'trust_score' => 0]);
         $requester = User::factory()->create(['karma_points' => 0, 'trust_score' => 0]);
-        $category = Category::create(['name' => 'Books', 'slug' => 'books']);
+        $category = Category::create(['name' => 'Books']);
  
         $item = Item::create([
             'user_id' => $giver->id,
@@ -29,17 +29,17 @@ class ReviewTest extends TestCase
             'title' => 'PHP 8 Programming Tips',
             'description' => 'Great PHP book.',
             'images' => [],
-            'type' => 'give',
-            'status' => 'reserved',
-            'city' => 'Hà Nội',
-            'district' => 'Cầu Giấy',
+            'type_id' => 1,
+            'item_status_id' => 3,
+            'city_id' => 1,
+            'district_id' => 1,
         ]);
  
         $itemRequest = ItemRequest::create([
             'item_id' => $item->id,
             'user_id' => $requester->id,
             'message' => 'I would love this book!',
-            'status' => 'approved',
+            'request_status_id' => 2,
         ]);
  
         $chatRoom = ChatRoom::create(['item_request_id' => $itemRequest->id]);
@@ -130,7 +130,7 @@ class ReviewTest extends TestCase
             ->set('rating', 5)
             ->call('submitReview');
  
-        $this->assertEquals('reserved', $scenario['item']->fresh()->status);
+        $this->assertEquals(3, $scenario['item']->fresh()->item_status_id);
  
         // Requester reviews giver
         $this->actingAs($scenario['requester']);
@@ -138,7 +138,7 @@ class ReviewTest extends TestCase
             ->set('rating', 4)
             ->call('submitReview');
  
-        $this->assertEquals('completed', $scenario['item']->fresh()->status);
+        $this->assertEquals(4, $scenario['item']->fresh()->item_status_id);
     }
  
     public function test_review_requires_rating(): void

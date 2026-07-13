@@ -124,8 +124,8 @@
                                                 <div class="flex items-center space-x-2 mt-1">
                                                     <span class="text-[10px] text-gray-400 uppercase tracking-wider font-semibold">{{ $item->category->name }}</span>
                                                     <span class="text-gray-300 dark:text-gray-700">•</span>
-                                                    <span class="text-xs {{ $item->type === 'give' ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400' }} font-bold">
-                                                        {{ $item->type === 'give' ? 'Tặng' : 'Trao đổi' }}
+                                                    <span class="text-xs {{ $item->type_id == 1 ? 'text-emerald-600 dark:text-emerald-400' : 'text-orange-600 dark:text-orange-400' }} font-bold">
+                                                        {{ $item->type->name }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -133,13 +133,7 @@
  
                                         <!-- Status Badge -->
                                         <div>
-                                            @if($item->status === 'available')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">Còn sẵn</span>
-                                            @elseif($item->status === 'reserved')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-950/30 dark:text-blue-300">Đã hẹn tặng</span>
-                                            @else
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-gray-100 text-gray-800 dark:bg-gray-750 dark:text-gray-300">Hoàn thành</span>
-                                            @endif
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $item->status->color ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">{{ $item->status->name }}</span>
                                         </div>
                                     </div>
  
@@ -154,7 +148,7 @@
                                         @else
                                             <div class="space-y-4">
                                                 @foreach($item->requests as $req)
-                                                    <div class="p-4 rounded-xl border {{ $req->status === 'approved' ? 'border-emerald-200 bg-emerald-50/5 dark:border-emerald-900/30' : 'border-gray-100 dark:border-gray-800 bg-gray-50/20 dark:bg-gray-900/10' }} flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                                                    <div class="p-4 rounded-xl border {{ $req->request_status_id == 2 ? 'border-emerald-200 bg-emerald-50/5 dark:border-emerald-900/30' : 'border-gray-100 dark:border-gray-800 bg-gray-50/20 dark:bg-gray-900/10' }} flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
                                                         <div class="flex items-start space-x-3 flex-1">
                                                             <div class="w-9 h-9 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center font-bold text-teal-800 dark:text-teal-300 text-xs flex-shrink-0">
                                                                 {{ substr($req->user->name, 0, 1) }}
@@ -175,8 +169,8 @@
  
                                                         <!-- Actions or Status badges -->
                                                         <div class="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
-                                                            @if($req->status === 'pending')
-                                                                @if($item->status === 'available')
+                                                            @if($req->request_status_id == 1)
+                                                                @if($item->item_status_id == 1)
                                                                     <button wire:click="approveRequest({{ $req->id }})" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-teal-500 hover:bg-teal-600 transition shadow-sm">
                                                                         Đồng ý tặng
                                                                     </button>
@@ -186,9 +180,9 @@
                                                                 @else
                                                                     <span class="text-xs text-gray-400 italic">Món đồ đang giao dịch</span>
                                                                 @endif
-                                                            @elseif($req->status === 'approved')
+                                                            @elseif($req->request_status_id == 2)
                                                                 <div class="flex items-center gap-2">
-                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">Đã đồng ý</span>
+                                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">{{ $req->status->name }}</span>
                                                                     @if($req->chatRoom)
                                                                         <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 transition shadow-sm flex items-center">
                                                                             <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -199,7 +193,7 @@
                                                                     @endif
                                                                 </div>
                                                             @else
-                                                                <span class="text-xs text-gray-400 dark:text-gray-500 italic">Đã từ chối</span>
+                                                                <span class="text-xs text-gray-400 dark:text-gray-500 italic">{{ $req->status->name }}</span>
                                                             @endif
                                                         </div>
                                                     </div>
@@ -242,8 +236,8 @@
                                             <div class="flex items-center space-x-2 mt-1">
                                                 <span class="text-[10px] text-gray-400 uppercase font-semibold">Người đăng: {{ $req->item->user->name }}</span>
                                                 <span class="text-gray-300 dark:text-gray-700">•</span>
-                                                <span class="text-xs {{ $req->item->type === 'give' ? 'text-emerald-600' : 'text-orange-600' }} font-bold">
-                                                    {{ $req->item->type === 'give' ? 'Tặng' : 'Trao đổi' }}
+                                                <span class="text-xs {{ $req->item->type_id == 1 ? 'text-emerald-600' : 'text-orange-600' }} font-bold">
+                                                    {{ $req->item->type->name }}
                                                 </span>
                                             </div>
                                         </div>
@@ -261,20 +255,14 @@
                                     <!-- Status & Actions -->
                                     <div class="flex items-center gap-3 flex-shrink-0 self-end md:self-center">
                                         <div>
-                                            @if($req->status === 'pending')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950/30 dark:text-amber-300">Đang chờ duyệt</span>
-                                            @elseif($req->status === 'approved')
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">Được đồng ý</span>
-                                            @else
-                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950/30 dark:text-rose-300">Đã từ chối</span>
-                                            @endif
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $req->status->color ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700' }}">{{ $req->status->name }}</span>
                                         </div>
  
-                                        @if($req->status === 'pending')
+                                        @if($req->request_status_id == 1)
                                             <button wire:click="cancelRequest({{ $req->id }})" class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-semibold">
                                                 Hủy yêu cầu
                                             </button>
-                                        @elseif($req->status === 'approved')
+                                        @elseif($req->request_status_id == 2)
                                             @if($req->chatRoom)
                                                 <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 transition shadow-sm flex items-center">
                                                     <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -105,7 +105,7 @@ class SubmitReview extends Component
         // Mark item as completed once BOTH parties have reviewed
         $bothReviewed = Review::where('item_request_id', $this->itemRequestId)->count() >= 2;
         if ($bothReviewed) {
-            $req->item->update(['status' => 'completed']);
+            $req->item->update(['item_status_id' => 4]);
         }
  
         $this->showModal = false;

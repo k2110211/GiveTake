@@ -18,7 +18,7 @@ class Home extends Component
         // Count stats for counters
         $totalItems = Item::count();
         $totalUsers = User::count();
-        $totalCompleted = Item::where('status', 'completed')->count();
+        $totalCompleted = Item::where('item_status_id', 4)->count();
 
         return view('livewire.home', [
             'categories' => $categories,

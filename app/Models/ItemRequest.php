@@ -15,8 +15,13 @@ class ItemRequest extends Model
         'item_id',
         'user_id',
         'message',
-        'status'
+        'request_status_id'
     ];
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(RequestStatus::class, 'request_status_id');
+    }
 
     public function item(): BelongsTo
     {

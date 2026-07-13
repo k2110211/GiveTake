@@ -65,8 +65,10 @@ class SearchItems extends Component
         $cities = City::all();
         $districts = $this->city ? District::where('city_id', $this->city)->get() : collect();
 
-        $query = Item::with(['category', 'user', 'city', 'district'])
-            ->where('status', 'available');
+        $typesList = \App\Models\Type::all();
+
+        $query = Item::with(['category', 'user', 'city', 'district', 'type', 'status'])
+            ->where('item_status_id', 1);
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -80,7 +82,7 @@ class SearchItems extends Component
         }
 
         if ($this->type) {
-            $query->where('type', $this->type);
+            $query->where('type_id', $this->type);
         }
 
         if ($this->city) {
@@ -98,6 +100,7 @@ class SearchItems extends Component
             'categories' => $categories,
             'cities' => $cities,
             'districts' => $districts,
+            'typesList' => $typesList,
         ])->layout('layouts.app');
     }
 }

@@ -18,9 +18,9 @@ class Item extends Model
         'description',
         'thumbnail',
         'images',
-        'type',
+        'type_id',
         'exchange_wish',
-        'status',
+        'item_status_id',
         'city_id',
         'district_id'
     ];
@@ -28,6 +28,16 @@ class Item extends Model
     protected $casts = [
         'images' => 'array',
     ];
+
+    public function status(): BelongsTo
+    {
+        return $this->belongsTo(ItemStatus::class, 'item_status_id');
+    }
+
+    public function type(): BelongsTo
+    {
+        return $this->belongsTo(Type::class, 'type_id');
+    }
 
     public function user(): BelongsTo
     {

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('phone')->nullable();
-            $table->string('city')->nullable();
-            $table->string('district')->nullable();
+            $table->unsignedBigInteger('city_id')->nullable();
+            $table->unsignedBigInteger('district_id')->nullable();
             $table->integer('karma_points')->default(50);
             $table->decimal('trust_score', 3, 2)->default(5.00);
             $table->rememberToken();

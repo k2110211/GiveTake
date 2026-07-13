@@ -187,12 +187,11 @@ class AdminPanelTest extends TestCase
     {
         $admin = $this->makeAdmin();
         $owner = $this->makeUser();
-        $cat   = Category::create(['name' => 'Test', 'slug' => 'test']);
+        $cat   = Category::create(['name' => 'Test']);
         $item  = Item::create([
             'user_id' => $owner->id, 'category_id' => $cat->id,
             'title' => 'Test Item', 'description' => 'desc',
-            'type' => 'give', 'status' => 'available',
-            'city' => 'HCM', 'district' => 'Q1',
+            'type_id' => 1, 'item_status_id' => 1, 'city_id' => 1, 'district_id' => 1,
             'images' => [],
         ]);
  
@@ -209,20 +208,19 @@ class AdminPanelTest extends TestCase
     {
         $admin = $this->makeAdmin();
         $owner = $this->makeUser();
-        $cat   = Category::create(['name' => 'Test', 'slug' => 'test']);
+        $cat   = Category::create(['name' => 'Test']);
         $item  = Item::create([
             'user_id' => $owner->id, 'category_id' => $cat->id,
             'title' => 'Test Item', 'description' => 'desc',
-            'type' => 'give', 'status' => 'available',
-            'city' => 'HCM', 'district' => 'Q1',
+            'type_id' => 1, 'item_status_id' => 1, 'city_id' => 1, 'district_id' => 1,
             'images' => [],
         ]);
  
         $this->actingAs($admin);
  
         Livewire::test(ItemIndex::class)
-            ->call('forceStatus', $item->id, 'completed');
+            ->call('forceStatus', $item->id, 4);
  
-        $this->assertSame('completed', $item->fresh()->status);
+        $this->assertEquals(4, $item->fresh()->item_status_id);
     }
 }
