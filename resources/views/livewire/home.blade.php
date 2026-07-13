@@ -94,30 +94,33 @@
 
     <!-- Stats & Trust Section -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-        <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-3xl p-6 sm:p-8 shadow-sm">
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto"
+        <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-emerald-500 via-teal-600 to-cyan-600 text-white p-6 sm:p-8 shadow-xl">
+            <!-- Animated background pattern -->
+            <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+            
+            <div class="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto"
                  x-data="{ shown: false }"
                  x-intersect.once="shown = true">
-                <div class="text-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400"
+                <div class="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white"
                          x-data="{ count: 0, target: {{ $totalItems ?? 0 }} }"
                          x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
                          x-text="count">0</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Món đồ đăng tải</div>
+                    <div class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mt-2">Món đồ đăng tải</div>
                 </div>
-                <div class="text-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400"
+                <div class="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white"
                          x-data="{ count: 0, target: {{ $totalUsers ?? 0 }} }"
                          x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
                          x-text="count">0</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Thành viên tích cực</div>
+                    <div class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mt-2">Thành viên tích cực</div>
                 </div>
-                <div class="text-center p-4 rounded-2xl bg-gray-50 dark:bg-gray-900/50">
-                    <div class="text-2xl sm:text-3xl font-extrabold text-teal-600 dark:text-teal-400"
+                <div class="text-center p-4 rounded-2xl bg-white/10 backdrop-blur-sm">
+                    <div class="text-2xl sm:text-3xl font-extrabold text-white"
                          x-data="{ count: 0, target: {{ $totalCompleted ?? 0 }} }"
                          x-init="$watch('shown', v => { if(v) { let start = performance.now(); const step = (now) => { let p = Math.min((now-start)/1500, 1); count = Math.floor((1-Math.pow(1-p,3))*target); if(p<1) requestAnimationFrame(step); }; requestAnimationFrame(step); } })"
                          x-text="count">0</div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 font-semibold uppercase tracking-wider mt-2">Món đồ đã tìm thấy chủ mới</div>
+                    <div class="text-xs text-emerald-100 font-semibold uppercase tracking-wider mt-2">Món đồ đã tìm thấy chủ mới</div>
                 </div>
             </div>
         </div>
