@@ -4,21 +4,14 @@ namespace App\Livewire;
  
 use App\Models\ChatMessage;
 use App\Models\ChatRoom as ChatRoomModel;
-use App\Events\MessageSent;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
  
 class ChatRoom extends Component
 {
     public $roomId;
     public $newMessage = '';
- 
-    public function getListeners()
-    {
-        return [
-            "echo-private:chat.{$this->roomId},.message.sent" => 'onMessageReceived',
-        ];
-    }
  
     public function mount($roomId)
     {
@@ -28,8 +21,8 @@ class ChatRoom extends Component
         $room = ChatRoomModel::with(['itemRequest.item.user', 'itemRequest.user'])
             ->findOrFail($roomId);
  
-        $userId = auth()->id();
-        $giverId = $room->itemRequest->item->user_id;
+        $userId     = auth()->id();
+        $giverId    = $room->itemRequest->item->user_id;
         $requesterId = $room->itemRequest->user_id;
  
         if ($userId !== $giverId && $userId !== $requesterId) {
@@ -51,9 +44,8 @@ class ChatRoom extends Component
     #[Computed]
     public function otherParticipant()
     {
-        $room = $this->room;
-        $giverId = $room->itemRequest->item->user_id;
-        $requesterId = $room->itemRequest->user_id;
+        $room        = $this->room;
+        $giverId     = $room->itemRequest->item->user_id;
  
         if (auth()->id() === $giverId) {
             return $room->itemRequest->user;
@@ -67,18 +59,15 @@ class ChatRoom extends Component
             'newMessage' => 'required|string|min:1|max:2000'
         ], [
             'newMessage.required' => 'Vui lòng nhập nội dung tin nhắn.',
-            'newMessage.max' => 'Tin nhắn không được vượt quá 2000 ký tự.'
+            'newMessage.max'      => 'Tin nhắn không được vượt quá 2000 ký tự.'
         ]);
  
-        $message = ChatMessage::create([
+        ChatMessage::create([
             'chat_room_id' => $this->roomId,
-            'user_id' => auth()->id(),
-            'message' => trim($this->newMessage),
-            'is_read' => false
+            'user_id'      => auth()->id(),
+            'message'      => trim($this->newMessage),
+            'is_read'      => false
         ]);
- 
-        // Broadcast the message sent event
-        broadcast(new MessageSent($message))->toOthers();
  
         // Mark all unread messages from the other party as read
         ChatMessage::where('chat_room_id', $this->roomId)
@@ -87,14 +76,15 @@ class ChatRoom extends Component
             ->update(['is_read' => true]);
  
         $this->newMessage = '';
-        
+ 
         $this->dispatch('message-sent');
+        unset($this->room); // bust computed cache
     }
  
-    public function onMessageReceived($event)
+    public function refresh()
     {
-        // Re-read and refresh message list
         $this->markAsRead();
+        unset($this->room);
         $this->dispatch('message-received');
     }
  
@@ -108,11 +98,10 @@ class ChatRoom extends Component
  
     public function render()
     {
-        // Mark messages as read on each render
         $this->markAsRead();
  
         return view('livewire.chat-room', [
-            'room' => $this->room,
+            'room'             => $this->room,
             'otherParticipant' => $this->otherParticipant
         ])->layout('layouts.app');
     }

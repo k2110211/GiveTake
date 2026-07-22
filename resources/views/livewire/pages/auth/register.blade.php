@@ -15,14 +15,11 @@ new #[Layout('layouts.guest')] class extends Component
     public string $password = '';
     public string $password_confirmation = '';
 
-    /**
-     * Handle an incoming registration request.
-     */
     public function register(): void
     {
         $validated = $this->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'name'     => ['required', 'string', 'max:255'],
+            'email'    => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -37,52 +34,101 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <form wire:submit="register">
-        <!-- Name -->
+    {{-- Heading --}}
+    <div class="mb-8">
+        <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Tạo tài khoản</h2>
+        <p class="text-sm text-gray-500 mt-1">Tham gia cộng đồng Give & Take miễn phí 🌿</p>
+    </div>
+
+    <form wire:submit="register" class="space-y-5">
+        {{-- Name --}}
         <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" class="block mt-1 w-full" type="text" name="name" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+            <label for="name" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                Họ và tên
+            </label>
+            <input wire:model="name" id="name" type="text" name="name"
+                   required autofocus autocomplete="name"
+                   placeholder="Nguyễn Văn A"
+                   class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
+                          focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
+                          transition-all placeholder-gray-300">
+            @error('name')
+                <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="email" id="email" class="block mt-1 w-full" type="email" name="email" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        {{-- Email --}}
+        <div>
+            <label for="email" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                Email
+            </label>
+            <input wire:model="email" id="email" type="email" name="email"
+                   required autocomplete="username"
+                   placeholder="you@example.com"
+                   class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
+                          focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
+                          transition-all placeholder-gray-300">
+            @error('email')
+                <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
+        {{-- Password --}}
+        <div>
+            <label for="password" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                Mật khẩu
+            </label>
+            <input wire:model="password" id="password" type="password" name="password"
+                   required autocomplete="new-password"
+                   placeholder="Tối thiểu 8 ký tự"
+                   class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
+                          focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
+                          transition-all placeholder-gray-300">
+            @error('password')
+                <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input wire:model="password_confirmation" id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+        {{-- Confirm Password --}}
+        <div>
+            <label for="password_confirmation" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                Xác nhận mật khẩu
+            </label>
+            <input wire:model="password_confirmation" id="password_confirmation" type="password"
+                   name="password_confirmation" required autocomplete="new-password"
+                   placeholder="Nhập lại mật khẩu"
+                   class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
+                          focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
+                          transition-all placeholder-gray-300">
+            @error('password_confirmation')
+                <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}" wire:navigate>
-                {{ __('Already registered?') }}
-            </a>
+        {{-- Terms note --}}
+        <p class="text-xs text-gray-400 leading-relaxed">
+            Bằng cách đăng ký, bạn đồng ý với
+            <span class="text-teal-600 font-medium">điều khoản sử dụng</span>
+            và <span class="text-teal-600 font-medium">chính sách bảo mật</span> của chúng tôi.
+        </p>
 
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
+        {{-- Submit --}}
+        <button type="submit"
+                class="w-full py-3 px-6 rounded-xl text-sm font-bold text-white
+                       bg-gradient-to-r from-emerald-500 to-teal-600
+                       hover:from-emerald-600 hover:to-teal-700
+                       shadow-md hover:shadow-lg
+                       transition-all duration-200 active:scale-[0.98]">
+            Tạo tài khoản
+        </button>
     </form>
+
+    {{-- Login link --}}
+    <p class="mt-6 text-center text-sm text-gray-500">
+        Đã có tài khoản?
+        <a href="{{ route('login') }}" wire:navigate
+           class="text-teal-600 font-semibold hover:text-teal-700 hover:underline ml-1">
+            Đăng nhập
+        </a>
+    </p>
 </div>

@@ -1,5 +1,6 @@
-<div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-900" 
-     x-data="{ 
+<div class="flex flex-col h-screen bg-gray-50 dark:bg-gray-900"
+     wire:poll.3000ms="refresh"
+     x-data="{
         scrollToBottom() {
             this.$refs.stream.scrollTop = this.$refs.stream.scrollHeight;
         }
@@ -62,7 +63,7 @@
         <div class="max-w-3xl mx-auto px-4 sm:px-6 py-6 flex flex-col space-y-4">
  
             <!-- Context Banner: Original Request Message -->
-            <div class="bg-white dark:bg-gray-800 border border-teal-100 dark:border-teal-900/30 rounded-2xl p-4 shadow-sm reveal">
+            <div class="bg-white dark:bg-gray-800 border border-teal-100 dark:border-teal-900/30 rounded-2xl p-4 shadow-sm">
                 <div class="flex items-start space-x-3">
                     <div class="w-8 h-8 rounded-full bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                         {{ substr($room->itemRequest->user->name, 0, 1) }}
@@ -165,7 +166,7 @@
             <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2.5 text-center">
                 Nhấn <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-100 dark:bg-gray-800">Enter</kbd> để gửi,
                 <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-100 dark:bg-gray-800">Shift+Enter</kbd> để xuống dòng
-                • Cập nhật thời gian thực bằng WebSockets Reverb
+                • Tự động làm mới mỗi 3 giây
             </p>
         </div>
     </div>

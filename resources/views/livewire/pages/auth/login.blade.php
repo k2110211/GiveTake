@@ -9,9 +9,6 @@ new #[Layout('layouts.guest')] class extends Component
 {
     public LoginForm $form;
 
-    /**
-     * Handle an incoming authentication request.
-     */
     public function login(): void
     {
         $this->validate();
@@ -31,47 +28,87 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+    {{-- Heading --}}
+    <div class="mb-8">
+        <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Đăng nhập</h2>
+        <p class="text-sm text-gray-500 mt-1">Chào mừng bạn trở lại! 👋</p>
+    </div>
 
-    <form wire:submit="login">
-        <!-- Email Address -->
+    {{-- Session Status --}}
+    @if (session('status'))
+        <div class="mb-5 px-4 py-3 rounded-xl bg-teal-50 border border-teal-200 text-sm text-teal-700 font-medium">
+            {{ session('status') }}
+        </div>
+    @endif
+
+    <form wire:submit="login" class="space-y-5">
+        {{-- Email --}}
         <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input wire:model="form.email" id="email" class="block mt-1 w-full" type="email" name="email" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('form.email')" class="mt-2" />
+            <label for="email" class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">
+                Email
+            </label>
+            <input wire:model="form.email" id="email" type="email" name="email"
+                   required autofocus autocomplete="username"
+                   placeholder="you@example.com"
+                   class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
+                          focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
+                          transition-all placeholder-gray-300">
+            @error('form.email')
+                <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input wire:model="form.password" id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="current-password" />
-
-            <x-input-error :messages="$errors->get('form.password')" class="mt-2" />
+        {{-- Password --}}
+        <div>
+            <div class="flex items-center justify-between mb-1.5">
+                <label for="password" class="block text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    Mật khẩu
+                </label>
+                @if (Route::has('password.request'))
+                    <a href="{{ route('password.request') }}" wire:navigate
+                       class="text-xs text-teal-600 hover:text-teal-700 font-medium hover:underline">
+                        Quên mật khẩu?
+                    </a>
+                @endif
+            </div>
+            <input wire:model="form.password" id="password" type="password" name="password"
+                   required autocomplete="current-password"
+                   placeholder="••••••••"
+                   class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
+                          focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
+                          transition-all placeholder-gray-300">
+            @error('form.password')
+                <p class="mt-1.5 text-xs text-rose-600">{{ $message }}</p>
+            @enderror
         </div>
 
-        <!-- Remember Me -->
-        <div class="block mt-4">
-            <label for="remember" class="inline-flex items-center">
-                <input wire:model="form.remember" id="remember" type="checkbox" class="rounded dark:bg-gray-900 border-gray-300 dark:border-gray-700 text-indigo-600 shadow-sm focus:ring-indigo-500 dark:focus:ring-indigo-600 dark:focus:ring-offset-gray-800" name="remember">
-                <span class="ms-2 text-sm text-gray-600 dark:text-gray-400">{{ __('Remember me') }}</span>
+        {{-- Remember me --}}
+        <div class="flex items-center">
+            <input wire:model="form.remember" id="remember" type="checkbox" name="remember"
+                   class="w-4 h-4 rounded border-gray-300 text-teal-600
+                          focus:ring-teal-500 focus:ring-offset-0">
+            <label for="remember" class="ml-2 text-sm text-gray-600 select-none">
+                Ghi nhớ đăng nhập
             </label>
         </div>
 
-        <div class="flex items-center justify-end mt-4">
-            @if (Route::has('password.request'))
-                <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('password.request') }}" wire:navigate>
-                    {{ __('Forgot your password?') }}
-                </a>
-            @endif
-
-            <x-primary-button class="ms-3">
-                {{ __('Log in') }}
-            </x-primary-button>
-        </div>
+        {{-- Submit --}}
+        <button type="submit"
+                class="w-full py-3 px-6 rounded-xl text-sm font-bold text-white
+                       bg-gradient-to-r from-emerald-500 to-teal-600
+                       hover:from-emerald-600 hover:to-teal-700
+                       shadow-md hover:shadow-lg
+                       transition-all duration-200 active:scale-[0.98]">
+            Đăng nhập
+        </button>
     </form>
+
+    {{-- Register link --}}
+    <p class="mt-6 text-center text-sm text-gray-500">
+        Chưa có tài khoản?
+        <a href="{{ route('register') }}" wire:navigate
+           class="text-teal-600 font-semibold hover:text-teal-700 hover:underline ml-1">
+            Đăng ký ngay
+        </a>
+    </p>
 </div>
