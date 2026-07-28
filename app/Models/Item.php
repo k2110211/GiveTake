@@ -20,6 +20,8 @@ class Item extends Model
         'images',
         'type_id',
         'exchange_wish',
+        'min_karma',
+        'winner_id',
         'item_status_id',
         'city_id',
         'district_id'
@@ -27,7 +29,13 @@ class Item extends Model
 
     protected $casts = [
         'images' => 'array',
+        'min_karma' => 'integer',
     ];
+
+    public function winner(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'winner_id');
+    }
 
     public function status(): BelongsTo
     {

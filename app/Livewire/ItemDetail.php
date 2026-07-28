@@ -51,7 +51,14 @@ class ItemDetail extends Component
             return;
         }
 
-        $this->message = '';
+        if ((int)$this->item->type_id === 3 && auth()->user()->karma_points < $this->item->min_karma) {
+            session()->flash('error', "Bạn cần có tối thiểu {$this->item->min_karma} điểm Karma để tham gia quay thưởng món đồ này!");
+            return;
+        }
+
+        $this->message = (int)$this->item->type_id === 3 
+            ? 'Tôi muốn đăng ký tham gia quay thưởng nhận món đồ này.' 
+            : '';
         $this->showRequestModal = true;
     }
 
@@ -61,19 +68,20 @@ class ItemDetail extends Component
             return $this->redirect(route('login'), navigate: true);
         }
 
-        if ($this->item->user_id === auth()->id()) {
+        if ($this->item->user_id === auth()->id() || $this->hasRequested) {
             return;
         }
 
-        if ($this->hasRequested) {
+        if ((int)$this->item->type_id === 3 && auth()->user()->karma_points < $this->item->min_karma) {
+            session()->flash('error', "Điểm Karma của bạn không đủ để tham gia quay thưởng!");
             return;
         }
 
         $this->validate([
-            'message' => 'required|string|min:10|max:500'
+            'message' => 'required|string|min:5|max:500'
         ], [
-            'message.required' => 'Vui lòng nhập lời nhắn giới thiệu.',
-            'message.min' => 'Lời nhắn phải có ít nhất 10 ký tự.',
+            'message.required' => 'Vui lòng nhập lời nhắn.',
+            'message.min' => 'Lời nhắn phải có ít nhất 5 ký tự.',
             'message.max' => 'Lời nhắn không được vượt quá 500 ký tự.'
         ]);
 
@@ -88,14 +96,79 @@ class ItemDetail extends Component
         unset($this->hasRequested);
         unset($this->item);
 
-        session()->flash('success', 'Yêu cầu của bạn đã được gửi thành công! Người tặng sẽ xem xét và phản hồi bạn.');
+        $msg = (int)$this->item->type_id === 3 
+            ? 'Bạn đã đăng ký tham gia quay thưởng thành công! Hãy chờ chủ bài viết chốt kết quả nhé.'
+            : 'Yêu cầu của bạn đã được gửi thành công! Người tặng sẽ xem xét và phản hồi bạn.';
+
+        session()->flash('success', $msg);
     }
- 
+
+    public function drawWinner()
+    {
+        if (!auth()->check() || $this->item->user_id !== auth()->id()) {
+            return;
+        }
+
+        if ((int)$this->item->type_id !== 3) {
+            return;
+        }
+
+        if ($this->item->winner_id) {
+            session()->flash('error', 'Món đồ này đã được quay thưởng rồi!');
+            return;
+        }
+
+        $requests = ItemRequest::where('item_id', $this->itemId)
+            ->where('request_status_id', 1)
+            ->get();
+
+        if ($requests->isEmpty()) {
+            session()->flash('error', 'Chưa có ai đăng ký tham gia quay thưởng!');
+            return;
+        }
+
+        // Randomly pick a winner
+        $winningRequest = $requests->random();
+        $winnerUser = $winningRequest->user;
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($winningRequest, $winnerUser) {
+            // Update winning request to Approved (id = 2)
+            $winningRequest->update(['request_status_id' => 2]);
+
+            // Update other pending requests to Rejected (id = 3)
+            ItemRequest::where('item_id', $this->itemId)
+                ->where('id', '!=', $winningRequest->id)
+                ->where('request_status_id', 1)
+                ->update(['request_status_id' => 3]);
+
+            // Update Item status to Reserved/Exchange in progress (id = 3) and set winner_id
+            $this->item->update([
+                'winner_id' => $winnerUser->id,
+                'item_status_id' => 3
+            ]);
+
+            // Create Chat Room if not exists
+            \App\Models\ChatRoom::firstOrCreate([
+                'item_request_id' => $winningRequest->id
+            ]);
+        });
+
+        unset($this->item);
+        session()->flash('success', "🎉 Chúc mừng! Người trúng thưởng là {$winnerUser->name}. Phòng chat đã được tự động tạo!");
+    }
+
     public function render()
     {
+        $requestsCount = ItemRequest::where('item_id', $this->itemId)->count();
+        $requestsList = (auth()->check() && $this->item->user_id === auth()->id())
+            ? ItemRequest::with('user')->where('item_id', $this->itemId)->get()
+            : collect();
+
         return view('livewire.item-detail', [
             'item' => $this->item,
-            'hasRequested' => $this->hasRequested
+            'hasRequested' => $this->hasRequested,
+            'requestsCount' => $requestsCount,
+            'requestsList' => $requestsList
         ])->layout('layouts.app');
     }
 }

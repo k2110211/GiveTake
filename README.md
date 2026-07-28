@@ -115,17 +115,9 @@ docker run --rm `
 
 ---
 
-### Bước 7 — Chạy WebSocket Server (Reverb)
-
-Để tính năng chat real-time hoạt động, bạn cần khởi chạy Reverb server bên trong Docker:
-
-```bash
-./vendor/bin/sail artisan reverb:start --host=0.0.0.0 --port=8080
-```
-
 ---
 
-### Bước 8 — Mở ứng dụng
+### Bước 7 — Mở ứng dụng
 
 Truy cập: **http://localhost:8000**
 
@@ -141,8 +133,7 @@ Tài khoản mẫu (sau khi seed):
 ./vendor/bin/sail up -d                              # Bật app
 ./vendor/bin/sail down                               # Tắt app
 ./vendor/bin/sail artisan migrate                    # Chạy migration mới
-./vendor/bin/sail artisan reverb:start --host=0.0.0.0 --port=8080  # Chạy WebSocket Server
-./vendor/bin/sail test                               # Chạy test suite (75 tests)
+./vendor/bin/sail test                               # Chạy test suite (74 tests)
 ./vendor/bin/sail npm run dev                        # Chạy Vite dev server (hot reload)
 ```
 

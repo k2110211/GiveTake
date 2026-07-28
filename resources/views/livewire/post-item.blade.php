@@ -130,11 +130,11 @@
                     <span class="w-2 h-5 bg-teal-500 rounded-full mr-2.5"></span>
                     Hình thức sẻ chia
                 </h3>
- 
+
                 <!-- Type Selection -->
                 <div>
                     <label class="block text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">Hình thức đăng bài <span class="text-rose-500">*</span></label>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         @foreach($types as $t)
                             <label class="relative flex flex-col p-4 rounded-2xl border cursor-pointer focus:outline-none transition {{ (int)$type === (int)$t->id ? 'border-teal-500 bg-teal-50/10 ring-2 ring-teal-200' : 'border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-900/50' }}">
                                 <input type="radio" name="type" value="{{ $t->id }}" wire:model.live="type" class="sr-only">
@@ -144,21 +144,41 @@
                                 </span>
                                 <span class="text-xs text-gray-400 dark:text-gray-500 mt-1 block">
                                     @if($t->id == 1)
-                                        Cho đi không nhận lại điểm Karma tương ứng
+                                        Cho đi miễn phí cho cộng đồng
+                                    @elseif($t->id == 2)
+                                        Đề xuất trao đổi lấy đồ dùng khác
                                     @else
-                                        Đề xuất trao đổi lấy một món đồ dùng khác
+                                        Quay thưởng ngẫu nhiên người nhận
                                     @endif
                                 </span>
                             </label>
                         @endforeach
                     </div>
                 </div>
- 
+
                 <!-- Exchange Wish -->
                 @if((int)$type === 2)
                     <div class="bg-orange-50/10 border border-orange-100 dark:border-orange-900/30 p-5 rounded-2xl animate-fadeIn">
                         <label for="exchangeWish" class="block text-xs font-bold text-orange-700 dark:text-orange-400 uppercase tracking-wider mb-2">Mong muốn nhận lại <span class="text-rose-500">*</span></label>
                         <textarea id="exchangeWish" wire:model="exchangeWish" rows="3" placeholder="Ví dụ: Mong muốn đổi lấy balo thể thao hoặc vợt bóng bàn còn dùng tốt..." class="w-full rounded-xl border-orange-200 dark:border-orange-900/40 bg-white dark:bg-gray-900 text-sm focus:border-orange-500 focus:ring focus:ring-orange-200 dark:text-gray-300 placeholder-gray-400"></textarea>
+                        @error('exchangeWish') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                @endif
+
+                <!-- Min Karma for Lucky Draw -->
+                @if((int)$type === 3)
+                    <div class="bg-purple-50/10 border border-purple-100 dark:border-purple-900/30 p-5 rounded-2xl animate-fadeIn">
+                        <label for="minKarma" class="block text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-2">Điểm Karma tối thiểu để tham gia <span class="text-rose-500">*</span></label>
+                        <div class="relative max-w-xs">
+                            <input type="number" min="0" max="9999" id="minKarma" wire:model="minKarma" placeholder="0" class="w-full rounded-xl border-purple-200 dark:border-purple-900/40 bg-white dark:bg-gray-900 text-sm focus:border-purple-500 focus:ring focus:ring-purple-200 dark:text-gray-300">
+                            <span class="absolute right-3 top-2.5 text-xs font-bold text-purple-500">Karma</span>
+                        </div>
+                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+                            Chỉ những thành viên có điểm Karma tích lũy cao hơn hoặc bằng số điểm này mới được quyền bấm tham gia quay thưởng.
+                        </p>
+                        @error('minKarma') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+                    </div>
+                @endifder-orange-500 focus:ring focus:ring-orange-200 dark:text-gray-300 placeholder-gray-400"></textarea>
                         @error('exchangeWish') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
                     </div>
                 @endif

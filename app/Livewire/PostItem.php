@@ -16,6 +16,7 @@ class PostItem extends Component
     public $categoryId = '';
     public $type = 1;
     public $exchangeWish = '';
+    public $minKarma = 0;
     public $city = '';
     public $district = '';
     public $thumbnail;
@@ -34,6 +35,7 @@ class PostItem extends Component
             'categoryId' => 'required|exists:categories,id',
             'type' => 'required|exists:types,id',
             'exchangeWish' => 'required_if:type,2|nullable|string|max:200',
+            'minKarma' => 'required_if:type,3|integer|min:0|max:9999',
             'city' => 'required|exists:cities,id',
             'district' => 'required|exists:districts,id',
             'thumbnail' => 'required|image|max:2048', // 1 main thumbnail image, max 2MB
@@ -56,6 +58,9 @@ class PostItem extends Component
             'type.required' => 'Vui lòng chọn hình thức.',
             'type.exists' => 'Hình thức chọn không hợp lệ.',
             'exchangeWish.required_if' => 'Vui lòng nhập mong muốn nhận lại khi chọn hình thức trao đổi.',
+            'minKarma.required_if' => 'Vui lòng nhập điểm Karma tối thiểu khi chọn quay thưởng.',
+            'minKarma.integer' => 'Điểm Karma phải là số nguyên.',
+            'minKarma.min' => 'Điểm Karma không được nhỏ hơn 0.',
             'city.required' => 'Vui lòng chọn tỉnh / thành phố.',
             'city.exists' => 'Tỉnh / thành phố không hợp lệ.',
             'district.required' => 'Vui lòng chọn quận / huyện.',
@@ -97,6 +102,7 @@ class PostItem extends Component
             'images' => $imagePaths,
             'type_id' => $this->type,
             'exchange_wish' => (int)$this->type === 2 ? $this->exchangeWish : null,
+            'min_karma' => (int)$this->type === 3 ? (int)$this->minKarma : 0,
             'item_status_id' => 1,
             'city_id' => $this->city,
             'district_id' => $this->district

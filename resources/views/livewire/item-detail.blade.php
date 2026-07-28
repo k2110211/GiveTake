@@ -116,9 +116,7 @@
                     <!-- Title -->
                     <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 dark:text-gray-100 mb-4 tracking-tight leading-tight">
                         {{ $item->title }}
-                    </h1>
-
-                    <!-- Details Card -->
+                     <!-- Details Card -->
                     <div class="grid grid-cols-2 gap-4 mb-6 border-b border-gray-100 dark:border-gray-700/50 pb-6">
                         <div class="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
                             <span class="text-[10px] text-gray-400 dark:text-gray-500 font-bold uppercase tracking-wider block mb-1">Hình thức</span>
@@ -126,9 +124,13 @@
                                 <span class="text-sm font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
                                     {{ $item->type->name }}
                                 </span>
-                            @else
+                            @elseif($item->type_id == 2)
                                 <span class="text-sm font-bold text-orange-600 dark:text-orange-400 flex items-center">
                                     {{ $item->type->name }}
+                                </span>
+                            @else
+                                <span class="text-sm font-bold text-purple-600 dark:text-purple-400 flex items-center">
+                                    🎲 {{ $item->type->name }}
                                 </span>
                             @endif
                         </div>
@@ -140,6 +142,35 @@
                             </span>
                         </div>
                     </div>
+
+                    <!-- Lucky Draw Notice Banner -->
+                    @if($item->type_id == 3)
+                        <div class="mb-6 bg-purple-50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900/30 p-4 rounded-2xl">
+                            <div class="flex items-center justify-between">
+                                <h4 class="text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider flex items-center">
+                                    <span class="text-base mr-1.5">🎲</span>
+                                    Quay Thưởng May Mắn:
+                                </h4>
+                                <span class="text-xs font-bold text-purple-600 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-2.5 py-1 rounded-full">
+                                    Cần >= {{ $item->min_karma }} Karma
+                                </span>
+                            </div>
+                            <p class="text-xs text-purple-900 dark:text-purple-300 mt-2 leading-relaxed">
+                                Bài viết này chọn người trúng thưởng ngẫu nhiên từ danh sách các thành viên đăng ký đủ điều kiện Karma.
+                            </p>
+                            @if($item->winner_id && $item->winner)
+                                <div class="mt-3 pt-3 border-t border-purple-200/50 dark:border-purple-900/40 flex items-center justify-between">
+                                    <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
+                                        🎉 Người trúng thưởng: <span class="ml-1 text-purple-900 dark:text-purple-200 underline">{{ $item->winner->name }}</span>
+                                    </span>
+                                </div>
+                            @else
+                                <div class="mt-2 text-[11px] text-purple-600 dark:text-purple-400 font-semibold">
+                                    📊 Hiện đã có {{ $requestsCount }} thành viên tham gia lượt quay
+                                </div>
+                            @endif
+                        </div>
+                    @endif
 
                     <!-- Exchange Wish List -->
                     @if($item->type_id == 2 && $item->exchange_wish)
@@ -172,7 +203,7 @@
                                         <svg class="w-4 h-4 mr-0.5 fill-current" viewBox="0 0 20 20">
                                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                                         </svg>
-                                        {{ number_format($item->user->trust_score, 1) }} Uy tín
+                                        {{ number_format($item->user->trust_score, 1) }} Uy tính
                                     </span>
                                     <span class="text-xs text-gray-400 dark:text-gray-500">|</span>
                                     <span class="text-xs font-semibold text-teal-600 dark:text-teal-400">
@@ -197,24 +228,58 @@
                             {{ $item->status->name }}
                         </button>
                     @elseif(auth()->check() && $item->user_id === auth()->id())
-                        <div class="bg-blue-50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 p-4 rounded-2xl text-center text-sm font-medium text-blue-800 dark:text-blue-300">
-                            Đây là món đồ bạn đăng tải. Bạn có thể quản lý tin đăng ở trang cá nhân.
+                        <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 p-4 rounded-2xl text-center text-sm font-medium">
+                            <p class="text-gray-600 dark:text-gray-300 mb-3">Đây là món đồ bạn đăng tải.</p>
+                            @if($item->type_id == 3)
+                                <div x-data="{ spinning: false }">
+                                    <button 
+                                        @click="
+                                            if({{ $requestsCount }} === 0) return;
+                                            spinning = true; 
+                                            setTimeout(() => { $wire.drawWinner().then(() => spinning = false); }, 2000);
+                                        "
+                                        :disabled="spinning || {{ $requestsCount }} === 0"
+                                        class="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition shadow-md disabled:opacity-50 flex items-center justify-center">
+                                        <template x-if="spinning">
+                                            <span class="flex items-center">
+                                                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+                                                🎲 Đang quay thưởng ngẫu nhiên...
+                                            </span>
+                                        </template>
+                                        <template x-if="!spinning">
+                                            <span>🎲 Quay Thưởng Ngẫu Nhiên ({{ $requestsCount }} người tham gia)</span>
+                                        </template>
+                                    </button>
+                                </div>
+                            @endif
                         </div>
                     @elseif($hasRequested)
                         <button disabled class="w-full py-4 rounded-2xl text-sm font-bold bg-teal-50 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-900/30 text-teal-700 dark:text-teal-400 cursor-not-allowed text-center flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                             </svg>
-                            Đã gửi yêu cầu (Đang chờ duyệt)
-                        </button>
-                    @else
-                        <button wire:click="openRequestModal" class="w-full py-4 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all text-center">
-                            @if($item->type_id == 1)
-                                Nhận miễn phí món đồ này
+                            @if($item->type_id == 3)
+                                Đã tham gia quay thưởng (Chờ chốt kết quả)
                             @else
-                                Gửi đề xuất trao đổi đồ
+                                Đã gửi yêu cầu (Đang chờ duyệt)
                             @endif
                         </button>
+                    @else
+                        @if($item->type_id == 3 && auth()->check() && auth()->user()->karma_points < $item->min_karma)
+                            <button disabled class="w-full py-4 rounded-2xl text-sm font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 cursor-not-allowed text-center">
+                                🔒 Cần tối thiểu {{ $item->min_karma }} Karma để tham gia (Bạn có {{ auth()->user()->karma_points }}đ)
+                            </button>
+                        @else
+                            <button wire:click="openRequestModal" class="w-full py-4 rounded-2xl text-sm font-bold text-white {{ $item->type_id == 3 ? 'bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700' : 'bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700' }} shadow-md hover:shadow-lg transition-all text-center">
+                                @if($item->type_id == 1)
+                                    Nhận miễn phí món đồ này
+                                @elseif($item->type_id == 2)
+                                    Gửi đề xuất trao đổi đồ
+                                @else
+                                    🎲 Tham gia quay thưởng ngay
+                                @endif
+                            </button>
+                        @endif
                     @endif
                 </div>
             </div>
