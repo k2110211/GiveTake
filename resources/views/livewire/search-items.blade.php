@@ -147,10 +147,14 @@
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v13m0-13V6a2 2 0 112 2h-2zm0 0V5.5A2.5 2.5 0 109.5 8H12zm-7 4h14M5 12a2 2 0 110-4h14a2 2 0 110 4M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/></svg>
                                                 {{ $item->type->name }}
                                             </span>
-                                        @else
+                                        @elseif($item->type_id == 2)
                                             <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-orange-500/90 backdrop-blur-sm text-white shadow-sm">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                                                 {{ $item->type->name }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-purple-500/90 backdrop-blur-sm text-white shadow-sm">
+                                                🎲 {{ $item->type->name }}
                                             </span>
                                         @endif
                                     </div>
@@ -159,11 +163,11 @@
                                 <!-- Card Content -->
                                 <div class="p-5 flex-1 flex flex-col justify-between">
                                     <div>
-                                        <div class="flex items-center justify-between mb-2">
-                                            <span class="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest">{{ $item->category->name }}</span>
-                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 flex items-center font-semibold">
-                                                <svg class="w-3.5 h-3.5 mr-1 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                                                {{ $item->district->name }}, {{ $item->city->name }}
+                                        <div class="mb-2">
+                                            <span class="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest block">{{ $item->category->name }}</span>
+                                            <span class="text-[10px] text-gray-400 dark:text-gray-500 flex items-center font-semibold mt-1">
+                                                <svg class="w-3.5 h-3.5 mr-1 text-gray-300 dark:text-gray-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                                <span class="truncate">{{ $item->district->name }}, {{ $item->city->name }}</span>
                                             </span>
                                         </div>
                                         <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100 hover:text-teal-600 transition-colors line-clamp-1 mb-2">
@@ -182,7 +186,6 @@
                                             </div>
                                             <div class="ml-2">
                                                 <p class="text-[10px] font-bold text-gray-800 dark:text-gray-200 line-clamp-1 leading-none">{{ $item->user->name }}</p>
-                                                <span class="text-[8px] text-gray-400 font-semibold tracking-wider uppercase">Karma: {{ $item->user->karma_points }}</span>
                                             </div>
                                         </div>
                                         <a href="{{ route('item.detail', ['id' => $item->id]) }}" wire:navigate class="inline-flex items-center text-xs font-bold text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300">

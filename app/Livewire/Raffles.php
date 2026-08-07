@@ -3,29 +3,28 @@
 namespace App\Livewire;
 
 use App\Models\Category;
-use App\Models\Item;
 use App\Models\City;
 use App\Models\District;
-use App\Models\Type;
+use App\Models\Item;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class SearchItems extends Component
+class Raffles extends Component
 {
     use WithPagination;
 
     public $search = '';
     public $categoryId = '';
-    public $type = '';
     public $city = '';
     public $district = '';
+    public $statusFilter = 'available'; // 'all', 'available', 'completed'
 
     protected $queryString = [
         'search' => ['except' => ''],
         'categoryId' => ['except' => ''],
-        'type' => ['except' => ''],
         'city' => ['except' => ''],
         'district' => ['except' => ''],
+        'statusFilter' => ['except' => 'available'],
     ];
 
     public function updatedSearch()
@@ -34,11 +33,6 @@ class SearchItems extends Component
     }
 
     public function updatedCategoryId()
-    {
-        $this->resetPage();
-    }
-
-    public function updatedType()
     {
         $this->resetPage();
     }
@@ -54,9 +48,14 @@ class SearchItems extends Component
         $this->resetPage();
     }
 
+    public function updatedStatusFilter()
+    {
+        $this->resetPage();
+    }
+
     public function resetFilters()
     {
-        $this->reset(['search', 'categoryId', 'type', 'city', 'district']);
+        $this->reset(['search', 'categoryId', 'city', 'district', 'statusFilter']);
         $this->resetPage();
     }
 
@@ -66,10 +65,15 @@ class SearchItems extends Component
         $cities = City::all();
         $districts = $this->city ? District::where('city_id', $this->city)->get() : collect();
 
-        $typesList = Type::all();
+        // Query only Lucky Draw items (type_id = 3)
+        $query = Item::with(['category', 'user', 'city', 'district', 'status', 'winner', 'requests'])
+            ->where('type_id', 3);
 
-        $query = Item::with(['category', 'user', 'city', 'district', 'type', 'status'])
-            ->where('item_status_id', 1);
+        if ($this->statusFilter === 'available') {
+            $query->where('item_status_id', 1); // Đang có sẵn / Đang diễn ra
+        } elseif ($this->statusFilter === 'completed') {
+            $query->whereIn('item_status_id', [2, 3, 4]); // Đã trao / Đang chốt kết quả
+        }
 
         if ($this->search) {
             $query->where(function ($q) {
@@ -82,10 +86,6 @@ class SearchItems extends Component
             $query->where('category_id', $this->categoryId);
         }
 
-        if ($this->type) {
-            $query->where('type_id', $this->type);
-        }
-
         if ($this->city) {
             $query->where('city_id', $this->city);
         }
@@ -96,12 +96,19 @@ class SearchItems extends Component
 
         $items = $query->latest()->paginate(9);
 
-        return view('livewire.search-items', [
+        // Stats for hero banner
+        $totalRaffles = Item::where('type_id', 3)->count();
+        $activeRaffles = Item::where('type_id', 3)->where('item_status_id', 1)->count();
+        $completedRaffles = Item::where('type_id', 3)->whereIn('item_status_id', [2, 3, 4])->count();
+
+        return view('livewire.raffles', [
             'items' => $items,
             'categories' => $categories,
             'cities' => $cities,
             'districts' => $districts,
-            'typesList' => $typesList,
+            'totalRaffles' => $totalRaffles,
+            'activeRaffles' => $activeRaffles,
+            'completedRaffles' => $completedRaffles,
         ])->layout('layouts.app');
     }
 }

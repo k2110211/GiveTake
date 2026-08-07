@@ -42,7 +42,7 @@ new class extends Component
 
                         <div class="flex flex-col">
                             <span class="text-gray-900 dark:text-white font-extrabold text-base tracking-tight leading-none">
-                                Give<span class="text-teal-500 dark:text-teal-400">&</span>Take
+                                Give<span class="text-teal-500 dark:text-teal-400"> & </span>Take
                             </span>
                             <span class="text-[9px] text-gray-500 dark:text-gray-400 font-semibold tracking-wider uppercase mt-0.5 leading-none hidden sm:inline">
                                 Trao & Nhận
@@ -52,9 +52,9 @@ new class extends Component
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-1 sm:ms-8 sm:flex">
+                <div class="hidden space-x-1 lg:ms-8 lg:flex">
                     <a href="{{ route('home') }}" wire:navigate
-                       class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                       class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
                               {{ request()->routeIs('home')
                                   ? 'text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40'
                                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
@@ -65,8 +65,8 @@ new class extends Component
                     </a>
 
                     <a href="{{ route('search') }}" wire:navigate
-                       class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
-                              {{ request()->routeIs('search')
+                       class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                              {{ request()->routeIs('search') && !request('type')
                                   ? 'text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40'
                                   : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,9 +75,18 @@ new class extends Component
                         Khám phá
                     </a>
 
+                    <a href="{{ route('raffles') }}" wire:navigate
+                       class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                              {{ request()->routeIs('raffles')
+                                  ? 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40'
+                                  : 'text-purple-600 dark:text-purple-400 hover:text-purple-900 dark:hover:text-purple-200 hover:bg-purple-50 dark:hover:bg-purple-950/30' }}">
+                        <span class="text-sm mr-1">🎲</span>
+                        Quay Thưởng
+                    </a>
+
                     @auth
                         <a href="{{ route('dashboard') }}" wire:navigate
-                           class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                           class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
                                   {{ request()->routeIs('dashboard')
                                       ? 'text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40'
                                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
@@ -88,7 +97,7 @@ new class extends Component
                         </a>
 
                         <a href="{{ route('item.create') }}" wire:navigate
-                           class="inline-flex items-center px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                           class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
                                   {{ request()->routeIs('item.create')
                                       ? 'text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40'
                                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
@@ -102,7 +111,7 @@ new class extends Component
             </div>
 
             <!-- Right Side: Auth / User Menu -->
-            <div class="hidden sm:flex sm:items-center sm:ms-6 space-x-3">
+            <div class="hidden lg:flex lg:items-center lg:ms-6 space-x-2 lg:space-x-3">
                 <!-- Theme Switcher Button -->
                 <button onclick="toggleTheme()" class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200" aria-label="Toggle theme">
                     <!-- Sun icon -->
@@ -131,7 +140,7 @@ new class extends Component
                                 <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-teal-400 to-emerald-600 flex items-center justify-center text-white font-bold text-xs mr-2 shadow-sm">
                                     {{ substr(auth()->user()->name, 0, 1) }}
                                 </div>
-                                <span x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="max-w-[120px] truncate"></span>
+                                <span x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name" class="max-w-[100px] lg:max-w-[120px] truncate"></span>
 
                                 <svg class="ms-1.5 h-4 w-4 text-gray-400 group-hover:text-gray-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -154,19 +163,32 @@ new class extends Component
                 @else
                     <div class="flex items-center space-x-2">
                         <a href="{{ route('login') }}" wire:navigate
-                           class="px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200">
+                           class="px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all duration-200">
                             Đăng nhập
                         </a>
                         <a href="{{ route('register') }}" wire:navigate
-                           class="px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all duration-200">
+                           class="px-3 lg:px-4 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 shadow-md hover:shadow-lg transition-all duration-200">
                             Tham gia ngay
                         </a>
                     </div>
                 @endauth
             </div>
 
-            <!-- Mobile Hamburger -->
-            <div class="-me-2 flex items-center sm:hidden">
+            <!-- Mobile Controls (Theme Switcher + Hamburger) -->
+            <div class="-me-2 flex items-center space-x-1 lg:hidden">
+                <!-- Mobile Theme Switcher Icon -->
+                <button onclick="toggleTheme()" class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200" aria-label="Toggle theme">
+                    <!-- Sun icon -->
+                    <svg x-show="darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+                    </svg>
+                    <!-- Moon icon -->
+                    <svg x-show="!darkMode" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+
+                <!-- Hamburger Button -->
                 <button @click="open = !open"
                         class="inline-flex items-center justify-center p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none transition-all duration-200">
                     <svg class="h-6 w-6 transition-transform duration-200" :class="open ? 'rotate-90' : ''" stroke="currentColor" fill="none" viewBox="0 0 24 24">
@@ -185,33 +207,23 @@ new class extends Component
          x-transition:leave="transition ease-in duration-150"
          x-transition:leave-start="opacity-100 translate-y-0"
          x-transition:leave-end="opacity-0 -translate-y-2"
-         class="sm:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
+         class="lg:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900">
 
         <div class="p-4 space-y-1">
-            <!-- Mobile Theme Switcher -->
-            <button onclick="toggleTheme()" class="w-full flex items-center px-4 py-3 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                <span class="flex items-center" x-show="darkMode" x-cloak>
-                    <svg class="w-5 h-5 mr-3 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.364l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
-                    </svg>
-                    Chuyển sang Chế độ sáng
-                </span>
-                <span class="flex items-center" x-show="!darkMode" x-cloak>
-                    <svg class="w-5 h-5 mr-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-                    </svg>
-                    Chuyển sang Chế độ tối
-                </span>
-            </button>
             <a href="{{ route('home') }}" wire:navigate
                class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('home') ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 Trang chủ
             </a>
             <a href="{{ route('search') }}" wire:navigate
-               class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('search') ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
+               class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('search') && !request('type') ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
                 <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 Khám phá
+            </a>
+            <a href="{{ route('raffles') }}" wire:navigate
+               class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('raffles') ? 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300' : 'text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30' }}">
+                <span class="text-base mr-3">🎲</span>
+                Quay Thưởng
             </a>
 
             @auth

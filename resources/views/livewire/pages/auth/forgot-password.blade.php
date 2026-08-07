@@ -32,12 +32,6 @@ new #[Layout('layouts.guest')] class extends Component
 <div>
     {{-- Heading --}}
     <div class="mb-8">
-        <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-teal-50 mb-4">
-            <svg class="w-6 h-6 text-teal-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75"
-                      d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
-            </svg>
-        </div>
         <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Quên mật khẩu?</h2>
         <p class="text-sm text-gray-500 mt-1 leading-relaxed">
             Nhập email của bạn và chúng tôi sẽ gửi link đặt lại mật khẩu.
@@ -62,7 +56,7 @@ new #[Layout('layouts.guest')] class extends Component
             </label>
             <input wire:model="email" id="email" type="email" name="email"
                    required autofocus
-                   placeholder="you@example.com"
+                   placeholder="email@example.com"
                    class="w-full rounded-xl border-gray-200 bg-gray-50 text-sm px-4 py-3
                           focus:border-teal-500 focus:ring focus:ring-teal-200 focus:bg-white
                           transition-all placeholder-gray-300">

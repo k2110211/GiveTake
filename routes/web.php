@@ -15,10 +15,12 @@ use App\Livewire\ItemDetail;
 use App\Livewire\PostItem;
 use App\Livewire\SearchItems;
 use App\Livewire\NewsDetail;
+use App\Livewire\Raffles;
 use Illuminate\Support\Facades\Route;
  
 Route::get('/', Home::class)->name('home');
 Route::get('/search', SearchItems::class)->name('search');
+Route::get('/raffles', Raffles::class)->name('raffles');
 Route::get('/news/{id}', NewsDetail::class)->name('news.detail');
 Route::get('/items/create', PostItem::class)->middleware('auth')->name('item.create');
 Route::get('/items/{id}', ItemDetail::class)->name('item.detail');

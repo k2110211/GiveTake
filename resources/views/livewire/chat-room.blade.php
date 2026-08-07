@@ -70,8 +70,8 @@
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center space-x-2 mb-1">
-                            <span class="text-xs font-bold text-teal-700 dark:text-teal-400">Lời nhắn xin đồ ban đầu</span>
-                            <span class="text-[10px] text-gray-400">{{ $room->itemRequest->created_at->format('d/m/Y') }}</span>
+                            <span class="text-xs font-bold text-teal-700 dark:text-teal-400">Lời nhắn</span>
+                            <span class="text-[10px] text-gray-400">Ngày {{ $room->itemRequest->created_at->format('d-m-Y') }}</span>
                         </div>
                         <p class="text-xs text-gray-600 dark:text-gray-400 italic leading-relaxed">
                             "{{ $room->itemRequest->message }}"
@@ -166,7 +166,6 @@
             <p class="text-[10px] text-gray-400 dark:text-gray-500 mt-2.5 text-center">
                 Nhấn <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-100 dark:bg-gray-800">Enter</kbd> để gửi,
                 <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-gray-100 dark:bg-gray-800">Shift+Enter</kbd> để xuống dòng
-                • Tự động làm mới mỗi 3 giây
             </p>
         </div>
     </div>
