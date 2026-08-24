@@ -178,9 +178,6 @@
                         </p>
                         @error('minKarma') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
                     </div>
-                @endifder-orange-500 focus:ring focus:ring-orange-200 dark:text-gray-300 placeholder-gray-400"></textarea>
-                        @error('exchangeWish') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
-                    </div>
                 @endif
             </div>
  

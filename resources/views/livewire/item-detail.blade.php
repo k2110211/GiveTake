@@ -5,9 +5,9 @@
         <nav class="flex mb-8 text-sm font-medium text-gray-500 dark:text-gray-400">
             <a href="/" class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors" wire:navigate>Trang chủ</a>
             <span class="mx-2">/</span>
-            <span class="text-gray-400">{{ $item->category->name }}</span>
+            <a href="/search?categoryId={{ $item->category->id }}" class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors" wire:navigate>{{ $item->category->name }}</a>
             <span class="mx-2">/</span>
-            <span class="text-gray-900 dark:text-gray-100 truncate max-w-[200px]">{{ $item->title }}</span>
+            <span class="text-gray-900 dark:text-gray-100">{{ $item->title }}</span>
         </nav>
 
         <!-- Flash Messages -->
