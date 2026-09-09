@@ -3,6 +3,25 @@
         <h1 class="text-xl font-bold text-gray-900">Tổng quan hệ thống</h1>
         <p class="text-sm text-gray-500 mt-0.5">Dữ liệu thống kê thời gian thực</p>
     </div>
+
+    @if(($stats['pending_items'] ?? 0) > 0)
+        <div class="mb-6 p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-amber-500/5 to-transparent border border-amber-300 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-3">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                </span>
+                <div>
+                    <h4 class="text-sm font-bold text-amber-900">Có {{ $stats['pending_items'] }} món đồ mới đang chờ bạn kiểm duyệt!</h4>
+                    <p class="text-xs text-amber-700 mt-0.5">Hãy xem xét phê duyệt hoặc từ chối để các món đồ sớm được hiển thị tới cộng đồng.</p>
+                </div>
+            </div>
+            <a href="{{ route('admin.items') }}" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1">
+                Duyệt ngay
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+        </div>
+    @endif
  
     <!-- Stats Grid -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -39,13 +58,18 @@
     </div>
  
     <!-- Item Status Breakdown -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-        @foreach([['available','Đang chia sẻ','teal'], ['reserved','Đang giữ','amber'], ['completed','Hoàn thành','green']] as [$status, $label, $color])
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        @foreach([
+            ['pending', 'Chờ duyệt', 'amber', 'border-amber-200 bg-amber-50/20'],
+            ['available', 'Đang chia sẻ', 'teal', 'border-teal-200 bg-teal-50/20'],
+            ['reserved', 'Đang giữ', 'blue', 'border-blue-200 bg-blue-50/20'],
+            ['completed', 'Hoàn thành', 'gray', 'border-gray-200 bg-gray-50/20']
+        ] as [$status, $label, $color, $borderBg])
             @php
-                $count = $stats[$status . '_items'];
+                $count = $stats[$status . '_items'] ?? 0;
                 $pct = $stats['total_items'] > 0 ? round(($count / $stats['total_items']) * 100) : 0;
             @endphp
-            <div class="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm">
+            <div class="bg-white rounded-2xl p-5 border {{ $borderBg }} shadow-sm">
                 <div class="flex justify-between items-center mb-3">
                     <span class="text-sm font-semibold text-gray-700">{{ $label }}</span>
                     <span class="text-sm font-bold text-gray-900">{{ $count }}</span>

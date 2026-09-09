@@ -11,7 +11,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                         </svg>
                     </div>
-                    <span class="text-white font-extrabold text-lg tracking-tight">GiveTake</span>
+                    <span class="text-white font-extrabold text-lg tracking-tight">Cho & Nhận</span>
                 </a>
                 <p class="text-sm text-gray-500 leading-relaxed mb-4 max-w-xs">
                     Nền tảng trao đổi & tặng đồ dùng cũ cho cộng đồng. Cho đi là nhận lại, cùng xây dựng lối sống bền vững.
@@ -46,12 +46,12 @@
 
             <!-- About -->
             <div>
-                <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Về GiveTake</h4>
+                <h4 class="text-white font-bold text-xs uppercase tracking-wider mb-4">Về Cho & Nhận</h4>
                 <ul class="space-y-2.5">
-                    <li><a href="#" class="text-sm hover:text-teal-400 transition-colors">Giới thiệu</a></li>
-                    <li><a href="#" class="text-sm hover:text-teal-400 transition-colors">Hướng dẫn sử dụng</a></li>
-                    <li><a href="#" class="text-sm hover:text-teal-400 transition-colors">Chính sách bảo mật</a></li>
-                    <li><a href="#" class="text-sm hover:text-teal-400 transition-colors">Điều khoản dịch vụ</a></li>
+                    <li><a href="{{ route('about') }}" wire:navigate class="text-sm hover:text-teal-400 transition-colors">Giới thiệu</a></li>
+                    <li><a href="{{ route('guide') }}" wire:navigate class="text-sm hover:text-teal-400 transition-colors">Hướng dẫn sử dụng</a></li>
+                    <li><a href="{{ route('privacy') }}" wire:navigate class="text-sm hover:text-teal-400 transition-colors">Chính sách bảo mật</a></li>
+                    <li><a href="{{ route('terms') }}" wire:navigate class="text-sm hover:text-teal-400 transition-colors">Điều khoản dịch vụ</a></li>
                 </ul>
             </div>
 
@@ -63,7 +63,7 @@
                         <svg class="w-4 h-4 mr-2 text-teal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                         </svg>
-                        contact@givetake.vn
+                        contact@chonhan.vn
                     </li>
                     <li class="flex items-center text-sm">
                         <svg class="w-4 h-4 mr-2 text-teal-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -81,7 +81,7 @@
     <div class="border-t border-gray-800">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <p class="text-xs text-gray-600">
-                &copy; {{ date('Y') }} GiveTake. Tất cả quyền được bảo lưu.
+                &copy; {{ date('Y') }} Cho & Nhận. Tất cả quyền được bảo lưu.
             </p>
             <p class="text-xs text-gray-600">
                 Made with <span class="text-rose-500">♥</span> for the community

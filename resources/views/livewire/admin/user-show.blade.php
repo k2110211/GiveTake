@@ -32,8 +32,8 @@
  
                 <div class="space-y-2 text-sm">
                     <div class="flex justify-between"><span class="text-gray-500">Điện thoại</span><span class="font-medium">{{ $user->phone ?? '—' }}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">Thành phố</span><span class="font-medium">{{ $user->city ?? '—' }}</span></div>
-                    <div class="flex justify-between"><span class="text-gray-500">Quận/Huyện</span><span class="font-medium">{{ $user->district ?? '—' }}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Thành phố</span><span class="font-medium">{{ $user->city?->name ?? '—' }}</span></div>
+                    <div class="flex justify-between"><span class="text-gray-500">Quận/Huyện</span><span class="font-medium">{{ $user->district?->name ?? '—' }}</span></div>
                     <div class="flex justify-between"><span class="text-gray-500">Trạng thái</span>
                         @if($user->is_admin) <span class="font-bold text-teal-600">Admin</span>
                         @elseif($user->is_banned) <span class="font-bold text-red-600">Bị khóa</span>
@@ -106,7 +106,7 @@
                         <li class="px-5 py-3 flex justify-between items-center">
                             <div>
                                 <p class="text-sm font-medium text-gray-800">{{ $item->title }}</p>
-                                <p class="text-xs text-gray-400">{{ $item->category->name ?? '' }} · {{ $item->city->name ?? '\ }}</p>
+                                <p class="text-xs text-gray-400">{{ $item->category?->name ?? '' }} · {{ $item->city?->name ?? '—' }}</p>
                             </div>
                             <span class="text-xs px-2 py-0.5 rounded-full font-medium
                                 {{ $item->item_status_id == 1 ? 'bg-teal-100 text-teal-700' : (($item->item_status_id == 2 || $item->item_status_id == 3) ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700') }}">

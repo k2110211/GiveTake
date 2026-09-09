@@ -92,6 +92,7 @@ class PostItemTest extends TestCase
         $this->assertNotNull($item);
         $this->assertEquals('Áo khoác gió hiệu Uniqlo', $item->title);
         $this->assertEquals($user->id, $item->user_id);
+        $this->assertEquals(\App\Models\ItemStatus::PENDING, $item->item_status_id);
         $this->assertNotNull($item->thumbnail);
         $this->assertCount(1, $item->images);
         

@@ -4,6 +4,7 @@ namespace App\Livewire;
  
 use App\Models\Item;
 use App\Models\ItemRequest;
+use App\Models\ItemStatus;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
  
@@ -16,6 +17,13 @@ class ItemDetail extends Component
     public function mount($id)
     {
         $this->itemId = $id;
+        $item = $this->item;
+        if (in_array((int)$item->item_status_id, [ItemStatus::PENDING, ItemStatus::REJECTED])) {
+            $canView = auth()->check() && (auth()->user()->is_admin || auth()->id() === $item->user_id);
+            if (!$canView) {
+                abort(404);
+            }
+        }
     }
  
     #[Computed]
@@ -35,10 +43,27 @@ class ItemDetail extends Component
             ->exists();
     }
 
+    #[Computed]
+    public function myRequest()
+    {
+        if (!auth()->check()) {
+            return null;
+        }
+        return ItemRequest::with('chatRoom')
+            ->where('item_id', $this->itemId)
+            ->where('user_id', auth()->id())
+            ->first();
+    }
+
     public function openRequestModal()
     {
         if (!auth()->check()) {
             return $this->redirect(route('login'), navigate: true);
+        }
+
+        if ((int)$this->item->item_status_id !== ItemStatus::AVAILABLE) {
+            session()->flash('error', 'Món đồ này hiện chưa sẵn sàng để nhận yêu cầu!');
+            return;
         }
 
         if ($this->item->user_id === auth()->id()) {
@@ -68,6 +93,11 @@ class ItemDetail extends Component
             return $this->redirect(route('login'), navigate: true);
         }
 
+        if ((int)$this->item->item_status_id !== ItemStatus::AVAILABLE) {
+            session()->flash('error', 'Món đồ này hiện chưa sẵn sàng để nhận yêu cầu!');
+            return;
+        }
+
         if ($this->item->user_id === auth()->id() || $this->hasRequested) {
             return;
         }
@@ -85,22 +115,34 @@ class ItemDetail extends Component
             'message.max' => 'Lời nhắn không được vượt quá 500 ký tự.'
         ]);
 
-        ItemRequest::create([
+        $itemRequest = ItemRequest::create([
             'item_id' => $this->item->id,
             'user_id' => auth()->id(),
             'message' => $this->message,
             'request_status_id' => 1
         ]);
 
+        $chatRoom = null;
+        if ((int)$this->item->type_id !== 3) {
+            $chatRoom = \App\Models\ChatRoom::firstOrCreate([
+                'item_request_id' => $itemRequest->id
+            ]);
+        }
+
         $this->showRequestModal = false;
+        $itemTypeId = (int)$this->item->type_id;
+
         unset($this->hasRequested);
+        unset($this->myRequest);
         unset($this->item);
 
-        $msg = (int)$this->item->type_id === 3 
-            ? 'Bạn đã đăng ký tham gia quay thưởng thành công! Hãy chờ chủ bài viết chốt kết quả nhé.'
-            : 'Yêu cầu của bạn đã được gửi thành công! Người tặng sẽ xem xét và phản hồi bạn.';
+        if ($itemTypeId === 3) {
+            session()->flash('success', 'Bạn đã đăng ký tham gia quay thưởng thành công! Hãy chờ chủ bài viết chốt kết quả nhé.');
+            return;
+        }
 
-        session()->flash('success', $msg);
+        session()->flash('success', 'Yêu cầu của bạn đã được gửi thành công! Phòng chat đã được mở để bạn trao đổi với người tặng.');
+        return $this->redirect(route('chat.room', ['roomId' => $chatRoom->id]), navigate: true);
     }
 
     public function drawWinner()
@@ -160,13 +202,25 @@ class ItemDetail extends Component
     public function render()
     {
         $requestsCount = ItemRequest::where('item_id', $this->itemId)->count();
-        $requestsList = (auth()->check() && $this->item->user_id === auth()->id())
-            ? ItemRequest::with('user')->where('item_id', $this->itemId)->get()
-            : collect();
+        $requestsList = collect();
+        if (auth()->check() && $this->item->user_id === auth()->id()) {
+            $requestsList = ItemRequest::with(['user', 'chatRoom', 'status'])
+                ->where('item_id', $this->itemId)
+                ->get();
+            if ((int)$this->item->type_id !== 3) {
+                foreach ($requestsList as $req) {
+                    if (!$req->chatRoom) {
+                        \App\Models\ChatRoom::firstOrCreate(['item_request_id' => $req->id]);
+                    }
+                }
+                $requestsList->load('chatRoom');
+            }
+        }
 
         return view('livewire.item-detail', [
             'item' => $this->item,
             'hasRequested' => $this->hasRequested,
+            'myRequest' => $this->myRequest,
             'requestsCount' => $requestsCount,
             'requestsList' => $requestsList
         ])->layout('layouts.app');

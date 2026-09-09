@@ -156,4 +156,40 @@ class DashboardTest extends TestCase
             'id' => $req->id
         ]);
     }
+
+    public function test_dashboard_initializes_and_displays_chat_for_pending_request(): void
+    {
+        $owner = User::factory()->create();
+        $requester = User::factory()->create();
+
+        $category = Category::create(['name' => 'Books']);
+        $item = Item::create([
+            'user_id' => $owner->id,
+            'category_id' => $category->id,
+            'title' => 'Laravel Book',
+            'description' => 'A comprehensive book on Laravel framework.',
+            'images' => [],
+            'type_id' => 1,
+            'item_status_id' => 1,
+            'city_id' => 1,
+            'district_id' => 1
+        ]);
+
+        $req = ItemRequest::create([
+            'item_id' => $item->id,
+            'user_id' => $requester->id,
+            'message' => 'I would love to learn Laravel from this book.',
+            'request_status_id' => 1
+        ]);
+
+        $this->actingAs($owner);
+
+        Livewire::test(Dashboard::class)
+            ->assertSee('Trò chuyện & Duyệt', false);
+
+        // ChatRoom should be created
+        $this->assertDatabaseHas('chat_rooms', [
+            'item_request_id' => $req->id
+        ]);
+    }
 }

@@ -24,12 +24,15 @@ class Item extends Model
         'winner_id',
         'item_status_id',
         'city_id',
-        'district_id'
+        'district_id',
+        'rejection_reason',
+        'approved_at'
     ];
 
     protected $casts = [
         'images' => 'array',
         'min_karma' => 'integer',
+        'approved_at' => 'datetime',
     ];
 
     public function winner(): BelongsTo

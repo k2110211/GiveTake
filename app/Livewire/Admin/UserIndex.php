@@ -36,7 +36,8 @@ class UserIndex extends Component
  
     public function render()
     {
-        $query = User::withCount(['items', 'receivedReviews'])
+        $query = User::with(['city', 'district'])
+            ->withCount(['items', 'receivedReviews'])
             ->when($this->search, fn($q) => $q->where(function($q) {
                 $q->where('name', 'like', "%{$this->search}%")
                   ->orWhere('email', 'like', "%{$this->search}%");

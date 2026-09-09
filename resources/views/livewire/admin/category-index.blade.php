@@ -58,7 +58,7 @@
                             <div class="flex-1 flex items-center gap-3">
                                 <div>
                                     <p class="text-sm font-medium text-gray-800">{{ $cat->name }}</p>
-                                    <p class="text-xs text-gray-400">{{ $cat->items_count }} món đồ · slug: {{ $cat->slug }}</p>
+                                    <p class="text-xs text-gray-400">{{ $cat->items_count }} món đồ</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-3">

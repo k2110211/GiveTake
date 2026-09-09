@@ -37,7 +37,7 @@ new #[Layout('layouts.guest')] class extends Component
     {{-- Heading --}}
     <div class="mb-8">
         <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">Tạo tài khoản</h2>
-        <p class="text-sm text-gray-500 mt-1">Tham gia cộng đồng Give & Take miễn phí 🌿</p>
+        <p class="text-sm text-gray-500 mt-1">Tham gia cộng đồng Cho & Nhận miễn phí 🌿</p>
     </div>
 
     <form wire:submit="register" class="space-y-5">
@@ -108,8 +108,8 @@ new #[Layout('layouts.guest')] class extends Component
         {{-- Terms note --}}
         <p class="text-xs text-gray-400 leading-relaxed">
             Bằng cách đăng ký, bạn đồng ý với
-            <span class="text-teal-600 font-medium">điều khoản sử dụng</span>
-            và <span class="text-teal-600 font-medium">chính sách bảo mật</span> của chúng tôi.
+            <a href="{{ route('terms') }}" wire:navigate target="_blank" class="text-teal-600 font-medium hover:underline">điều khoản sử dụng</a>
+            và <a href="{{ route('privacy') }}" wire:navigate target="_blank" class="text-teal-600 font-medium hover:underline">chính sách bảo mật</a> của chúng tôi.
         </p>
 
         {{-- Submit --}}

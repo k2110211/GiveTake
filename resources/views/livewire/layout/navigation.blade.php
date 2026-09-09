@@ -42,10 +42,10 @@ new class extends Component
 
                         <div class="flex flex-col">
                             <span class="text-gray-900 dark:text-white font-extrabold text-base tracking-tight leading-none">
-                                Give<span class="text-teal-500 dark:text-teal-400"> & </span>Take
+                                Cho<span class="text-teal-500 dark:text-teal-400"> & </span>Nhận
                             </span>
                             <span class="text-[9px] text-gray-500 dark:text-gray-400 font-semibold tracking-wider uppercase mt-0.5 leading-none hidden sm:inline">
-                                Trao & Nhận
+                                Chia sẻ cộng đồng
                             </span>
                         </div>
                     </a>

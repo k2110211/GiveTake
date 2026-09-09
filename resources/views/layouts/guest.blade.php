@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'GiveTake') }}</title>
+    <title>{{ config('app.name', 'Cho & Nhận') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -40,7 +40,7 @@
             </div>
 
             <h1 class="text-4xl xl:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
-                Give & Take
+                Cho & Nhận
             </h1>
             <p class="text-emerald-100 text-base xl:text-lg leading-relaxed mb-10">
                 Cho đi những gì bạn không dùng,<br>
@@ -78,7 +78,7 @@
                           d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                 </svg>
             </div>
-            <h2 class="text-xl font-extrabold text-gray-900">Give & Take</h2>
+            <h2 class="text-xl font-extrabold text-gray-900">Cho & Nhận</h2>
         </div>
 
         {{-- Back to home link --}}

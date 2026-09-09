@@ -4,6 +4,7 @@ namespace App\Livewire;
  
 use App\Models\Category;
 use App\Models\Item;
+use App\Models\ItemStatus;
 use Livewire\Component;
 use Livewire\WithFileUploads;
  
@@ -103,12 +104,12 @@ class PostItem extends Component
             'type_id' => $this->type,
             'exchange_wish' => (int)$this->type === 2 ? $this->exchangeWish : null,
             'min_karma' => (int)$this->type === 3 ? (int)$this->minKarma : 0,
-            'item_status_id' => 1,
+            'item_status_id' => ItemStatus::PENDING,
             'city_id' => $this->city,
             'district_id' => $this->district
         ]);
  
-        session()->flash('success', 'Món đồ đã được đăng tải thành công!');
+        session()->flash('success', 'Món đồ đã được gửi đăng thành công và đang chờ Ban Quản Trị duyệt trước khi hiển thị công khai!');
         return $this->redirect(route('item.detail', ['id' => $item->id]), navigate: true);
     }
  

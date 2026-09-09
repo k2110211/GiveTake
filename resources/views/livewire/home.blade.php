@@ -12,7 +12,7 @@
                     Cộng Đồng Chia Sẻ Đồ Cũ
                 </span>
                 <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4">
-                    Give & Take — Cho Đi Là Nhận Lại
+                    Cho & Nhận — Cho Đi Là Nhận Lại
                 </h1>
                 <p class="text-sm sm:text-base text-emerald-100 mb-6 leading-relaxed">
                     Nền tảng giúp bạn trao tặng những món đồ không dùng tới hoặc trao đổi lấy những gì bạn đang cần. Hãy cùng nhau xây dựng lối sống xanh và sẻ chia!

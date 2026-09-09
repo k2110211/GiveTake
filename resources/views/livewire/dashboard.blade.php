@@ -132,20 +132,45 @@
                                         </div>
  
                                         <!-- Status Badge -->
-                                        <div>
+                                        <div class="text-right">
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $item->status->color ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300' }}">{{ $item->status->name }}</span>
+                                            @if((int)$item->item_status_id === 5)
+                                                <p class="text-[11px] text-amber-600 dark:text-amber-400 mt-1 flex items-center justify-end gap-1 font-medium">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                                    Chờ BQT duyệt
+                                                </p>
+                                            @elseif((int)$item->item_status_id === 6)
+                                                <p class="text-[11px] text-rose-600 dark:text-rose-400 mt-1 flex items-center justify-end gap-1 font-medium">
+                                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                                    Đã bị từ chối
+                                                </p>
+                                            @endif
                                         </div>
                                     </div>
- 
-                                    <!-- Received Requests Sub-section -->
-                                    <div class="p-5 bg-white dark:bg-gray-800/40">
-                                        <h5 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
-                                            Yêu cầu nhận đồ ({{ $item->requests->count() }})
-                                        </h5>
-                                        
-                                        @if($item->requests->isEmpty())
-                                            <p class="text-xs text-gray-500 dark:text-gray-400 italic">Chưa có ai gửi yêu cầu nhận món đồ này.</p>
-                                        @else
+
+                                    @if((int)$item->item_status_id === 5)
+                                        <div class="p-4 bg-amber-50/50 dark:bg-amber-950/20 border-t border-amber-100 dark:border-amber-900/30 text-xs text-amber-800 dark:text-amber-300 flex items-center gap-2">
+                                            <svg class="w-4 h-4 text-amber-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span>Món đồ của bạn đã được gửi và đang chờ Ban Quản Trị phê duyệt trước khi hiển thị công khai.</span>
+                                        </div>
+                                    @elseif((int)$item->item_status_id === 6)
+                                        <div class="p-4 bg-rose-50/50 dark:bg-rose-950/20 border-t border-rose-100 dark:border-rose-900/30 text-xs text-rose-800 dark:text-rose-300 flex items-start gap-2">
+                                            <svg class="w-4 h-4 text-rose-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                                            <div>
+                                                <span class="font-bold">Món đồ đã bị từ chối duyệt.</span>
+                                                <p class="mt-0.5 text-rose-700 dark:text-rose-400">Lý do: {{ $item->rejection_reason ?: 'Nội dung hoặc hình ảnh không phù hợp quy định đăng tin.' }}</p>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <!-- Received Requests Sub-section -->
+                                        <div class="p-5 bg-white dark:bg-gray-800/40">
+                                            <h5 class="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-4">
+                                                Yêu cầu nhận đồ ({{ $item->requests->count() }})
+                                            </h5>
+                                            
+                                            @if($item->requests->isEmpty())
+                                                <p class="text-xs text-gray-500 dark:text-gray-400 italic">Chưa có ai gửi yêu cầu nhận món đồ này.</p>
+                                            @else
                                             <div class="space-y-4">
                                                 @foreach($item->requests as $req)
                                                     <div class="p-4 rounded-xl border {{ $req->request_status_id == 2 ? 'border-emerald-200 bg-emerald-50/5 dark:border-emerald-900/30' : 'border-gray-100 dark:border-gray-800 bg-gray-50/20 dark:bg-gray-900/10' }} flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -170,16 +195,20 @@
                                                         <!-- Actions or Status badges -->
                                                         <div class="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
                                                             @if($req->request_status_id == 1)
-                                                                @if($item->item_status_id == 1)
-                                                                    <button wire:click="approveRequest({{ $req->id }})" class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-teal-500 hover:bg-teal-600 transition shadow-sm">
-                                                                        Đồng ý tặng
-                                                                    </button>
-                                                                    <button wire:click="rejectRequest({{ $req->id }})" class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-450 hover:bg-gray-50 dark:hover:bg-gray-900 transition">
-                                                                        Từ chối
-                                                                    </button>
-                                                                @else
-                                                                    <span class="text-xs text-gray-400 italic">Món đồ đang giao dịch</span>
+                                                                <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-yellow-100 text-yellow-800 dark:bg-yellow-950/30 dark:text-yellow-400">
+                                                                    {{ $req->status->name }}
+                                                                </span>
+                                                                @if($req->chatRoom)
+                                                                    <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-teal-500 hover:bg-teal-600 transition shadow-sm flex items-center">
+                                                                        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                                        </svg>
+                                                                        Trò chuyện & Duyệt
+                                                                    </a>
                                                                 @endif
+                                                                <button wire:click="rejectRequest({{ $req->id }})" wire:confirm="Bạn có chắc chắn muốn từ chối yêu cầu này?" class="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-450 hover:bg-gray-50 dark:hover:bg-gray-900 transition">
+                                                                    Từ chối
+                                                                </button>
                                                             @elseif($req->request_status_id == 2)
                                                                 <div class="flex items-center gap-2">
                                                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-300">{{ $req->status->name }}</span>
@@ -194,6 +223,11 @@
                                                                 </div>
                                                             @else
                                                                 <span class="text-xs text-gray-400 dark:text-gray-500 italic">{{ $req->status->name }}</span>
+                                                                @if($req->chatRoom)
+                                                                    <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-2 py-1 rounded-lg text-xs font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 border border-gray-200 dark:border-gray-700 flex items-center">
+                                                                        Xem chat
+                                                                    </a>
+                                                                @endif
                                                             @endif
                                                         </div>
                                                     </div>
@@ -201,6 +235,7 @@
                                             </div>
                                         @endif
                                     </div>
+                                    @endif
                                 </div>
                             @endforeach
                         </div>
@@ -251,26 +286,26 @@
                                         </p>
                                         <span class="text-[9px] text-gray-400 mt-1 block">Gửi lúc {{ $req->created_at->format('H:i d/m/Y') }}</span>
                                     </div>
- 
+
                                     <!-- Status & Actions -->
                                     <div class="flex items-center gap-3 flex-shrink-0 self-end md:self-center">
                                         <div>
                                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold {{ $req->status->color ?? 'bg-gray-100 text-gray-800 dark:bg-gray-700' }}">{{ $req->status->name }}</span>
                                         </div>
- 
+
+                                        @if($req->chatRoom)
+                                            <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 transition shadow-sm flex items-center">
+                                                <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                                </svg>
+                                                Trò chuyện
+                                            </a>
+                                        @endif
+
                                         @if($req->request_status_id == 1)
-                                            <button wire:click="cancelRequest({{ $req->id }})" class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-semibold">
+                                            <button wire:click="cancelRequest({{ $req->id }})" wire:confirm="Bạn có chắc chắn muốn hủy yêu cầu này?" class="text-xs text-rose-600 hover:text-rose-800 hover:underline font-semibold">
                                                 Hủy yêu cầu
                                             </button>
-                                        @elseif($req->request_status_id == 2)
-                                            @if($req->chatRoom)
-                                                <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 transition shadow-sm flex items-center">
-                                                    <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                                                    </svg>
-                                                    Trò chuyện
-                                                </a>
-                                            @endif
                                         @endif
                                     </div>
                                 </div>

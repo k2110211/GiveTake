@@ -139,6 +139,24 @@ class AdminPanelTest extends TestCase
  
         $this->assertDatabaseHas('users', ['id' => $target->id, 'is_admin' => true]);
     }
+
+    public function test_users_page_displays_city_and_district_properly(): void
+    {
+        $city = \App\Models\City::create(['name' => 'Cần Thơ']);
+        $district = \App\Models\District::create(['city_id' => $city->id, 'name' => 'Ninh Kiều']);
+        $user = User::factory()->create([
+            'city_id' => $city->id,
+            'district_id' => $district->id,
+        ]);
+
+        $admin = $this->makeAdmin();
+        $this->actingAs($admin);
+
+        Livewire::test(UserIndex::class)
+            ->assertSee('Cần Thơ')
+            ->assertSee('Ninh Kiều')
+            ->assertDontSee('{"id":' . $city->id);
+    }
  
     // ─── Category Management ────────────────────────────────────────────
  
@@ -222,5 +240,86 @@ class AdminPanelTest extends TestCase
             ->call('forceStatus', $item->id, 4);
  
         $this->assertEquals(4, $item->fresh()->item_status_id);
+    }
+
+    public function test_admin_can_approve_pending_item(): void
+    {
+        $admin = $this->makeAdmin();
+        $owner = $this->makeUser();
+        $cat   = Category::create(['name' => 'Bàn ghế']);
+        $item  = Item::create([
+            'user_id' => $owner->id, 'category_id' => $cat->id,
+            'title' => 'Bàn làm việc gỗ thông', 'description' => 'Còn rất mới',
+            'type_id' => 1, 'item_status_id' => \App\Models\ItemStatus::PENDING, 'city_id' => 1, 'district_id' => 1,
+            'images' => [],
+        ]);
+
+        $this->actingAs($admin);
+
+        Livewire::test(ItemIndex::class)
+            ->call('approveItem', $item->id)
+            ->assertSee('Đã duyệt món đồ');
+
+        $fresh = $item->fresh();
+        $this->assertEquals(\App\Models\ItemStatus::AVAILABLE, $fresh->item_status_id);
+        $this->assertNotNull($fresh->approved_at);
+        $this->assertNull($fresh->rejection_reason);
+    }
+
+    public function test_admin_can_reject_item_with_reason(): void
+    {
+        $admin = $this->makeAdmin();
+        $owner = $this->makeUser();
+        $cat   = Category::create(['name' => 'Điện tử']);
+        $item  = Item::create([
+            'user_id' => $owner->id, 'category_id' => $cat->id,
+            'title' => 'Điện thoại hỏng', 'description' => 'Không lên nguồn',
+            'type_id' => 1, 'item_status_id' => \App\Models\ItemStatus::PENDING, 'city_id' => 1, 'district_id' => 1,
+            'images' => [],
+        ]);
+
+        $this->actingAs($admin);
+
+        Livewire::test(ItemIndex::class)
+            ->call('openRejectModal', $item->id)
+            ->call('selectQuickReason', 'Hình ảnh không rõ ràng / mờ')
+            ->call('confirmReject')
+            ->assertSee('Đã từ chối duyệt');
+
+        $fresh = $item->fresh();
+        $this->assertEquals(\App\Models\ItemStatus::REJECTED, $fresh->item_status_id);
+        $this->assertEquals('Hình ảnh không rõ ràng / mờ', $fresh->rejection_reason);
+    }
+
+    public function test_admin_can_switch_tabs_in_items_index(): void
+    {
+        $admin = $this->makeAdmin();
+        $this->actingAs($admin);
+
+        Livewire::test(ItemIndex::class)
+            ->call('setTab', 'rejected')
+            ->assertSet('activeTab', 'rejected')
+            ->call('setTab', 'available')
+            ->assertSet('activeTab', 'available');
+    }
+
+    public function test_preview_modal_hides_reject_button_when_item_is_approved(): void
+    {
+        $admin = $this->makeAdmin();
+        $owner = $this->makeUser();
+        $cat   = Category::create(['name' => 'Sách']);
+        $item  = Item::create([
+            'user_id' => $owner->id, 'category_id' => $cat->id,
+            'title' => 'Sách giáo khoa lớp 12', 'description' => 'Còn mới',
+            'type_id' => 1, 'item_status_id' => \App\Models\ItemStatus::AVAILABLE, 'city_id' => 1, 'district_id' => 1,
+            'images' => [],
+        ]);
+
+        $this->actingAs($admin);
+
+        Livewire::test(ItemIndex::class)
+            ->call('previewItem', $item->id)
+            ->assertSee('Đã duyệt (Đang hiển thị công khai)')
+            ->assertDontSee('Từ chối duyệt');
     }
 }

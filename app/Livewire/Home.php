@@ -16,7 +16,7 @@ class Home extends Component
         $newsList = News::with('user')->latest()->take(5)->get();
 
         // Count stats for counters
-        $totalItems = Item::count();
+        $totalItems = Item::whereNotIn('item_status_id', [\App\Models\ItemStatus::PENDING, \App\Models\ItemStatus::REJECTED])->count();
         $totalUsers = User::count();
         $totalCompleted = Item::where('item_status_id', 4)->count();
 

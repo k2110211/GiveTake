@@ -9,7 +9,7 @@
 
             <div class="relative z-10 max-w-2xl">
                 <span class="bg-white/20 backdrop-blur-md text-[10px] sm:text-xs font-extrabold tracking-widest uppercase px-3 py-1 rounded-full text-white mb-4 inline-flex items-center">
-                    <span class="text-sm mr-1.5">🎲</span> Độc Quyền Cộng Đồng Give & Take
+                    <span class="text-sm mr-1.5">🎲</span> Độc Quyền Cộng Đồng Cho & Nhận
                 </span>
                 <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 leading-tight">
                     Quay Thưởng May Mắn
@@ -129,7 +129,7 @@
                         
                         <!-- Lucky Draw Badge Top Right -->
                         <div class="absolute top-3 right-3 bg-purple-900/80 backdrop-blur-md text-white text-[11px] font-extrabold px-3 py-1 rounded-full border border-purple-400/30 flex items-center shadow-lg">
-                            <span class="mr-1">🎲</span> >= {{ $item->min_karma }} Karma
+                            <span class="mr-1">🎲</span> Cần {{ $item->min_karma }} Karma
                         </div>
 
                         <!-- Status Badge Top Left -->

@@ -21,28 +21,36 @@ class Dashboard extends Component
     public function approveRequest($requestId)
     {
         $request = ItemRequest::with('item')->findOrFail($requestId);
- 
+
         if ($request->item->user_id !== auth()->id()) {
             abort(403);
         }
- 
+
         // Update request status to approved (Đồng ý = 2)
         $request->update(['request_status_id' => 2]);
- 
+
         // Update item status to reserved (Đang trao đổi = 3)
         $request->item->update(['item_status_id' => 3]);
- 
+
         // Reject all other pending requests for the same item (Từ chối = 3)
         ItemRequest::where('item_id', $request->item_id)
             ->where('id', '!=', $requestId)
             ->where('request_status_id', 1)
             ->update(['request_status_id' => 3]);
- 
+
         // Automatically create a ChatRoom to initiate conversation
-        ChatRoom::firstOrCreate([
+        $chatRoom = ChatRoom::firstOrCreate([
             'item_request_id' => $requestId
         ]);
- 
+
+        $actionText = (int)$request->item->type_id === 2 ? 'trao đổi' : 'tặng';
+        \App\Models\ChatMessage::create([
+            'chat_room_id' => $chatRoom->id,
+            'user_id'      => auth()->id(),
+            'message'      => "🎉 [Hệ thống] Chủ món đồ đã chấp nhận {$actionText} món đồ này với bạn! Hãy hẹn thời gian và địa điểm giao nhận nhé.",
+            'is_read'      => false
+        ]);
+
         session()->flash('success', 'Bạn đã đồng ý tặng món đồ này! Phòng chat đã được khởi tạo để trao đổi chi tiết.');
     }
  
@@ -87,6 +95,24 @@ class Dashboard extends Component
             ->where('user_id', $user->id)
             ->latest()
             ->get();
+
+        // Ensure ChatRooms exist for items
+        foreach ($myItems as $item) {
+            if ((int)$item->type_id !== 3) {
+                foreach ($item->requests as $req) {
+                    if (!$req->chatRoom) {
+                        $room = ChatRoom::firstOrCreate(['item_request_id' => $req->id]);
+                        $req->setRelation('chatRoom', $room);
+                    }
+                }
+            }
+        }
+        foreach ($sentRequests as $req) {
+            if ($req->item && (int)$req->item->type_id !== 3 && !$req->chatRoom) {
+                $room = ChatRoom::firstOrCreate(['item_request_id' => $req->id]);
+                $req->setRelation('chatRoom', $room);
+            }
+        }
  
         // Stats calculations
         $myItemsIds = $myItems->pluck('id')->toArray();

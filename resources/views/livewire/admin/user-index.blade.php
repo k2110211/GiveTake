@@ -46,7 +46,12 @@
                             </a>
                             <p class="text-xs text-gray-400">{{ $user->email }}</p>
                         </td>
-                        <td class="px-4 py-3 text-gray-500 hidden md:table-cell">{{ $user->city ?? '—' }}</td>
+                        <td class="px-4 py-3 text-gray-500 hidden md:table-cell">
+                            <span class="font-medium text-gray-700">{{ $user->city?->name ?? '—' }}</span>
+                            @if($user->district?->name)
+                                <span class="text-xs text-gray-400 block">{{ $user->district->name }}</span>
+                            @endif
+                        </td>
                         <td class="px-4 py-3 text-center font-bold text-amber-600">{{ $user->karma_points }}</td>
                         <td class="px-4 py-3 text-center text-gray-600 hidden lg:table-cell">{{ $user->items_count }}</td>
                         <td class="px-4 py-3">

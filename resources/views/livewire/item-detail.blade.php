@@ -37,6 +37,43 @@
             </div>
         @endif
 
+        <!-- Moderation Status Banners -->
+        @if((int)$item->item_status_id === 5)
+            <div class="mb-8 p-5 rounded-2xl bg-amber-500/10 dark:bg-amber-950/30 border border-amber-300 dark:border-amber-800/50 flex items-start gap-4 shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <h4 class="font-bold text-amber-900 dark:text-amber-200 text-base">Đang chờ Ban Quản Trị phê duyệt</h4>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-amber-200/60 dark:bg-amber-900/60 text-amber-800 dark:text-amber-300">Chế độ xem trước</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-amber-800/90 dark:text-amber-300/90 mt-1 leading-relaxed">
+                        Món đồ này hiện đang ở trạng thái <strong>Chờ duyệt</strong> và chỉ hiển thị với bạn cùng Ban Quản Trị. Sau khi được duyệt, món đồ sẽ tự động xuất hiện trên trang chủ và danh sách tìm kiếm công khai.
+                    </p>
+                </div>
+            </div>
+        @elseif((int)$item->item_status_id === 6)
+            <div class="mb-8 p-5 rounded-2xl bg-rose-500/10 dark:bg-rose-950/30 border border-rose-300 dark:border-rose-800/50 flex items-start gap-4 shadow-sm">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center flex-shrink-0 text-rose-600 dark:text-rose-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <div class="flex items-center gap-2">
+                        <h4 class="font-bold text-rose-900 dark:text-rose-200 text-base">Món đồ đã bị Ban Quản Trị từ chối duyệt</h4>
+                        <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-rose-200/60 dark:bg-rose-900/60 text-rose-800 dark:text-rose-300">Từ chối</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-rose-800/90 dark:text-rose-300/90 mt-1 leading-relaxed">
+                        <strong>Lý do từ chối:</strong> {{ $item->rejection_reason ?: 'Nội dung hoặc hình ảnh không phù hợp với quy chuẩn cộng đồng.' }}
+                    </p>
+                </div>
+            </div>
+        @endif
+
         <!-- Main Product Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden reveal">
             
@@ -152,7 +189,7 @@
                                     Quay Thưởng May Mắn:
                                 </h4>
                                 <span class="text-xs font-bold text-purple-600 dark:text-purple-300 bg-purple-100 dark:bg-purple-900/40 px-2.5 py-1 rounded-full">
-                                    Cần >= {{ $item->min_karma }} Karma
+                                    Cần {{ $item->min_karma }} Karma
                                 </span>
                             </div>
                             <p class="text-xs text-purple-900 dark:text-purple-300 mt-2 leading-relaxed">
@@ -229,14 +266,14 @@
                         </button>
                     @elseif(auth()->check() && $item->user_id === auth()->id())
                         <div class="bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-800 p-4 rounded-2xl text-center text-sm font-medium">
-                            <p class="text-gray-600 dark:text-gray-300 mb-3">Đây là món đồ bạn đăng tải.</p>
+                            <p class="text-gray-600 dark:text-gray-300 mb-2">Đây là món đồ bạn đăng tải.</p>
                             @if($item->type_id == 3)
                                 <div x-data="{ spinning: false }">
                                     <button 
                                         @click="
                                             if({{ $requestsCount }} === 0) return;
                                             spinning = true; 
-                                            setTimeout(() => { $wire.drawWinner().then(() => spinning = false); }, 2000);
+                                             setTimeout(() => { $wire.drawWinner().then(() => spinning = false); }, 2000);
                                         "
                                         :disabled="spinning || {{ $requestsCount }} === 0"
                                         class="w-full py-3.5 px-4 rounded-xl font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 transition shadow-md disabled:opacity-50 flex items-center justify-center">
@@ -251,19 +288,62 @@
                                         </template>
                                     </button>
                                 </div>
+                            @else
+                                <div class="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700/60 text-left">
+                                    <h5 class="text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider mb-2 flex items-center justify-between">
+                                        <span>Người gửi yêu cầu ({{ $requestsCount }})</span>
+                                        <a href="{{ route('dashboard') }}" wire:navigate class="text-xs text-teal-600 dark:text-teal-400 hover:underline normal-case font-medium">Xem Dashboard →</a>
+                                    </h5>
+                                    @if($requestsList->isEmpty())
+                                        <p class="text-xs text-gray-400 dark:text-gray-500 italic">Chưa có ai gửi yêu cầu xin/trao đổi món đồ này.</p>
+                                    @else
+                                        <div class="space-y-2 mt-2 max-h-48 overflow-y-auto">
+                                            @foreach($requestsList as $req)
+                                                <div class="p-2.5 rounded-xl bg-white dark:bg-gray-800 border border-gray-200/60 dark:border-gray-700 flex items-center justify-between gap-2">
+                                                    <div class="flex items-center space-x-2 min-w-0">
+                                                        <div class="w-7 h-7 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center font-bold text-teal-800 dark:text-teal-300 text-xs flex-shrink-0">
+                                                            {{ substr($req->user->name, 0, 1) }}
+                                                        </div>
+                                                        <div class="min-w-0">
+                                                            <p class="text-xs font-bold text-gray-900 dark:text-gray-100 truncate">{{ $req->user->name }}</p>
+                                                            <p class="text-[10px] text-gray-500 truncate">{{ $req->status->name }}</p>
+                                                        </div>
+                                                    </div>
+                                                    @if($req->chatRoom)
+                                                        <a href="{{ route('chat.room', ['roomId' => $req->chatRoom->id]) }}" wire:navigate class="px-2.5 py-1 text-xs font-bold text-white bg-blue-500 hover:bg-blue-600 rounded-lg transition flex items-center flex-shrink-0">
+                                                            Trò chuyện
+                                                        </a>
+                                                    @endif
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
                             @endif
                         </div>
                     @elseif($hasRequested)
-                        <button disabled class="w-full py-4 rounded-2xl text-sm font-bold bg-teal-50 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-900/30 text-teal-700 dark:text-teal-400 cursor-not-allowed text-center flex items-center justify-center">
-                            <svg class="w-5 h-5 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
-                            </svg>
-                            @if($item->type_id == 3)
+                        @if($item->type_id == 3)
+                            <button disabled class="w-full py-4 rounded-2xl text-sm font-bold bg-teal-50 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-900/30 text-teal-700 dark:text-teal-400 cursor-not-allowed text-center flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
                                 Đã tham gia quay thưởng (Chờ chốt kết quả)
-                            @else
+                            </button>
+                        @elseif(isset($myRequest) && $myRequest && $myRequest->chatRoom)
+                            <a href="{{ route('chat.room', ['roomId' => $myRequest->chatRoom->id]) }}" wire:navigate class="w-full py-4 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 shadow-md hover:shadow-lg transition-all text-center flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
+                                </svg>
+                                Vào phòng chat với người tặng
+                            </a>
+                        @else
+                            <button disabled class="w-full py-4 rounded-2xl text-sm font-bold bg-teal-50 dark:bg-teal-950/20 border border-teal-200 dark:border-teal-900/30 text-teal-700 dark:text-teal-400 cursor-not-allowed text-center flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
                                 Đã gửi yêu cầu (Đang chờ duyệt)
-                            @endif
-                        </button>
+                            </button>
+                        @endif
                     @else
                         @if($item->type_id == 3 && auth()->check() && auth()->user()->karma_points < $item->min_karma)
                             <button disabled class="w-full py-4 rounded-2xl text-sm font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 cursor-not-allowed text-center">

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
  
 use App\Models\Item;
 use App\Models\ItemRequest;
+use App\Models\ItemStatus;
 use App\Models\Review;
 use App\Models\User;
 use Livewire\Component;
@@ -16,6 +17,7 @@ class Dashboard extends Component
             'total_users'        => User::where('is_admin', false)->count(),
             'banned_users'       => User::where('is_banned', true)->count(),
             'total_items'        => Item::count(),
+            'pending_items'      => Item::where('item_status_id', ItemStatus::PENDING)->count(),
             'available_items'    => Item::where('item_status_id', 1)->count(),
             'reserved_items'     => Item::whereIn('item_status_id', [2, 3])->count(),
             'completed_items'    => Item::where('item_status_id', 4)->count(),

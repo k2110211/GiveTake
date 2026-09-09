@@ -36,6 +36,12 @@ Route::get('/chat/{roomId}', ChatRoomComponent::class)
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+
+// ─── Public Information Pages ──────────────────────────────────────────────
+Route::view('/about', 'pages.about')->name('about');
+Route::view('/guide', 'pages.guide')->name('guide');
+Route::view('/privacy', 'pages.privacy')->name('privacy');
+Route::view('/terms', 'pages.terms')->name('terms');
  
 Route::post('/logout', function () {
     \Illuminate\Support\Facades\Auth::guard('web')->logout();

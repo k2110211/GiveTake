@@ -57,13 +57,13 @@ class DatabaseSeeder extends Seeder
   
         // ─── Default Categories ──────────────────────────────────────────
         $categoriesData = [
-            'Clothing & Fashion' => 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80',
-            'Electronics & Gadgets' => 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=400&q=80',
-            'Books & Stationery' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80',
-            'Home & Kitchen' => 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=400&q=80',
-            'Toys & Baby Care' => 'https://images.unsplash.com/photo-1539627831859-a911cf04d3cd?auto=format&fit=crop&w=400&q=80',
-            'Sports & Outdoors' => 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=400&q=80',
-            'Other Items' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80'
+            'Thời trang & Quần áo' => 'https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?auto=format&fit=crop&w=400&q=80',
+            'Đồ điện tử & Công nghệ' => 'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=400&q=80',
+            'Sách & Văn phòng phẩm' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=400&q=80',
+            'Đồ gia dụng & Bếp' => 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=400&q=80',
+            'Đồ chơi & Mẹ bé' => 'https://images.unsplash.com/photo-1539627831859-a911cf04d3cd?auto=format&fit=crop&w=400&q=80',
+            'Thể thao & Dã ngoại' => 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=400&q=80',
+            'Đồ dùng khác' => 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=400&q=80'
         ];
   
         $categories = [];
@@ -136,7 +136,7 @@ class DatabaseSeeder extends Seeder
         // Seed mock items
         Item::create([
             'user_id' => $userA->id,
-            'category_id' => $categories['Clothing & Fashion']->id,
+            'category_id' => $categories['Thời trang & Quần áo']->id,
             'title' => 'Áo khoác gió nam Uniqlo size L',
             'description' => 'Áo khoác gió chống nước nhẹ màu xanh đen của Uniqlo, size L (phù hợp người từ 65-75kg). Áo còn khá mới, khoá kéo mượt mà, không bị rách hay sờn vải.',
             'thumbnail' => 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80',
@@ -153,7 +153,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userA->id,
-            'category_id' => $categories['Electronics & Gadgets']->id,
+            'category_id' => $categories['Đồ điện tử & Công nghệ']->id,
             'title' => 'Điện thoại Vsmart Joy 3 cũ',
             'description' => 'Máy màu đen 3GB RAM / 32GB ROM, hoạt động bình thường, màn hình xước nhẹ. Thích hợp làm máy phụ hoặc cho học sinh học tập.',
             'thumbnail' => 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80',
@@ -167,7 +167,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userB->id,
-            'category_id' => $categories['Books & Stationery']->id,
+            'category_id' => $categories['Sách & Văn phòng phẩm']->id,
             'title' => 'Sách giáo khoa Toán lớp 10 mới 90%',
             'description' => 'Bộ sách giáo khoa Toán lớp 10 (tập 1 và 2) chương trình mới Cánh Diều. Sách bọc bìa cẩn thận, không viết vẽ bậy bên trong.',
             'thumbnail' => 'https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=600&q=80',
@@ -181,7 +181,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userB->id,
-            'category_id' => $categories['Home & Kitchen']->id,
+            'category_id' => $categories['Đồ gia dụng & Bếp']->id,
             'title' => 'Bộ nồi chảo chống dính Sunhouse',
             'description' => 'Gồm 1 nồi nhôm và 1 chảo chống dính cỡ trung. Chảo còn lớp chống dính tốt, nồi sạch sẽ không móp méo.',
             'thumbnail' => 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=600&q=80',
@@ -195,7 +195,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userC->id,
-            'category_id' => $categories['Toys & Baby Care']->id,
+            'category_id' => $categories['Đồ chơi & Mẹ bé']->id,
             'title' => 'Gấu bông Teddy size lớn 1m2',
             'description' => 'Gấu bông Teddy màu nâu, cao khoảng 1m2, sạch sẽ đã giặt sấy thơm tho. Muốn tặng lại cho bé nào yêu thích.',
             'thumbnail' => 'https://images.unsplash.com/photo-1539627831859-a911cf04d3cd?auto=format&fit=crop&w=600&q=80',
@@ -209,7 +209,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userC->id,
-            'category_id' => $categories['Sports & Outdoors']->id,
+            'category_id' => $categories['Thể thao & Dã ngoại']->id,
             'title' => 'Vợt cầu lông Yonex Carbon cũ',
             'description' => 'Vợt đơn Yonex dòng Carbon nhẹ, căng cước 10kg chơi tốt. Khung vợt trầy xước nhẹ do sử dụng nhưng không nứt gãy.',
             'thumbnail' => 'https://images.unsplash.com/photo-1626224583764-f87db24ac4ea?auto=format&fit=crop&w=600&q=80',
@@ -223,7 +223,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userA->id,
-            'category_id' => $categories['Other Items']->id,
+            'category_id' => $categories['Đồ dùng khác']->id,
             'title' => 'Đàn guitar acoustic gỗ hồng đào',
             'description' => 'Đàn tập chơi cho người mới bắt đầu. Gỗ hồng đào bền bỉ, âm thanh trầm ấm, đã thay dây mới tinh. Tặng kèm bao da.',
             'thumbnail' => 'https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=600&q=80',
@@ -237,7 +237,7 @@ class DatabaseSeeder extends Seeder
   
         Item::create([
             'user_id' => $userB->id,
-            'category_id' => $categories['Books & Stationery']->id,
+            'category_id' => $categories['Sách & Văn phòng phẩm']->id,
             'title' => 'Bản đồ thế giới khổ lớn treo tường',
             'description' => 'Kích thước 1m2 x 0.8m, bản dịch tiếng Việt rõ nét, thích hợp treo phòng làm việc hoặc phòng trẻ em học địa lý.',
             'thumbnail' => 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?auto=format&fit=crop&w=600&q=80',

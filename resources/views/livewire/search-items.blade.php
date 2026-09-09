@@ -158,6 +158,21 @@
                                             </span>
                                         @endif
                                     </div>
+
+                                    <!-- Interest Chip -->
+                                    @if(isset($item->requests_count) && $item->requests_count > 0)
+                                        <div class="absolute top-3 right-3">
+                                            @if($item->type_id == 3)
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-purple-900/80 backdrop-blur-md text-purple-200 border border-purple-400/30 shadow-sm">
+                                                    🎲 {{ $item->requests_count }} người quay
+                                                </span>
+                                            @else
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-gray-900/80 backdrop-blur-md text-teal-300 border border-teal-500/30 shadow-sm">
+                                                    💬 {{ $item->requests_count }} người ngỏ ý
+                                                </span>
+                                            @endif
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <!-- Card Content -->

@@ -11,9 +11,9 @@
         </script>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <meta name="description" content="GiveTake – Nền tảng trao đổi & tặng đồ dùng cũ cho cộng đồng. Cho đi là nhận lại!">
+        <meta name="description" content="Cho & Nhận – Nền tảng trao đổi & tặng đồ dùng cũ cho cộng đồng. Trao yêu thương, nhận nụ cười!">
 
-        <title>{{ config('app.name', 'GiveTake') }}</title>
+        <title>{{ config('app.name', 'Cho & Nhận') }}</title>
 
         <!-- Fonts: Be Vietnam Pro -->
         <link rel="preconnect" href="https://fonts.googleapis.com">

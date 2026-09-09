@@ -69,6 +69,7 @@ class SearchItems extends Component
         $typesList = Type::all();
 
         $query = Item::with(['category', 'user', 'city', 'district', 'type', 'status'])
+            ->withCount('requests')
             ->where('item_status_id', 1);
 
         if ($this->search) {

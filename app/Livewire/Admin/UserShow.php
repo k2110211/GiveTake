@@ -45,7 +45,7 @@ class UserShow extends Component
  
     public function render()
     {
-        $user = User::with(['items.category', 'receivedReviews.reviewer', 'itemRequests.item'])
+        $user = User::with(['city', 'district', 'items.category', 'items.city', 'receivedReviews.reviewer', 'itemRequests.item'])
             ->findOrFail($this->userId);
  
         return view('livewire.admin.user-show', compact('user'))
