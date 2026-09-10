@@ -76,6 +76,11 @@ class ItemDetail extends Component
             return;
         }
 
+        if ((int)$this->item->type_id === 3 && $this->item->raffle_ends_at && $this->item->raffle_ends_at->isPast()) {
+            session()->flash('error', 'Lượt quay thưởng này đã hết hạn đăng ký tham gia!');
+            return;
+        }
+
         if ((int)$this->item->type_id === 3 && auth()->user()->karma_points < $this->item->min_karma) {
             session()->flash('error', "Bạn cần có tối thiểu {$this->item->min_karma} điểm Karma để tham gia quay thưởng món đồ này!");
             return;
@@ -99,6 +104,24 @@ class ItemDetail extends Component
         }
 
         if ($this->item->user_id === auth()->id() || $this->hasRequested) {
+            return;
+        }
+
+        $executed = \Illuminate\Support\Facades\RateLimiter::attempt(
+            'item-request:' . auth()->id(),
+            $maxAttempts = 10,
+            function () {},
+            $decaySeconds = 60
+        );
+
+        if (!$executed) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn('item-request:' . auth()->id());
+            session()->flash('error', "Bạn đang gửi yêu cầu quá nhanh. Vui lòng thử lại sau {$seconds} giây.");
+            return;
+        }
+
+        if ((int)$this->item->type_id === 3 && $this->item->raffle_ends_at && $this->item->raffle_ends_at->isPast()) {
+            session()->flash('error', 'Lượt quay thưởng này đã hết hạn đăng ký tham gia!');
             return;
         }
 

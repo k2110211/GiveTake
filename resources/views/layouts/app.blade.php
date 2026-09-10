@@ -15,6 +15,18 @@
 
         <title>{{ config('app.name', 'Cho & Nhận') }}</title>
 
+        <!-- Favicon -->
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+
+        <!-- OpenGraph Meta Tags -->
+        <meta property="og:site_name" content="Cho & Nhận">
+        <meta property="og:type" content="website">
+        <meta property="og:title" content="{{ config('app.name', 'Cho & Nhận') }}">
+        <meta property="og:description" content="Cho & Nhận – Nền tảng trao đổi & tặng đồ dùng cũ cho cộng đồng. Trao yêu thương, nhận nụ cười!">
+        <meta property="og:image" content="{{ asset('favicon.svg') }}">
+        <meta property="og:url" content="{{ url()->current() }}">
+        @stack('meta')
+
         <!-- Fonts: Be Vietnam Pro -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

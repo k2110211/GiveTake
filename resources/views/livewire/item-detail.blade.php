@@ -1,3 +1,10 @@
+@push('meta')
+    <meta property="og:title" content="{{ $item->title }} – Cho & Nhận">
+    <meta property="og:description" content="{{ \Illuminate\Support\Str::limit(strip_tags($item->description), 150) }}">
+    <meta property="og:image" content="{{ $item->thumbnail }}">
+    <meta property="og:url" content="{{ route('item.detail', $item->id) }}">
+@endpush
+
 <div class="py-12 bg-gray-50 dark:bg-gray-900 min-h-screen" x-data="{ activeImage: @js($item->thumbnail), showLightbox: false }">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -195,6 +202,18 @@
                             <p class="text-xs text-purple-900 dark:text-purple-300 mt-2 leading-relaxed">
                                 Bài viết này chọn người trúng thưởng ngẫu nhiên từ danh sách các thành viên đăng ký đủ điều kiện Karma.
                             </p>
+                            @if($item->raffle_ends_at)
+                                <div class="mt-2.5 flex items-center gap-1.5 text-xs font-semibold {{ $item->raffle_ends_at->isPast() ? 'text-amber-600 dark:text-amber-400' : 'text-purple-700 dark:text-purple-300' }}">
+                                    <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    @if($item->raffle_ends_at->isPast())
+                                        <span>Đã kết thúc nhận đăng ký ({{ $item->raffle_ends_at->format('H:i d/m/Y') }})</span>
+                                    @else
+                                        <span>Thời gian quay số: <strong>{{ $item->raffle_ends_at->format('H:i d/m/Y') }}</strong> ({{ $item->raffle_ends_at->diffForHumans() }})</span>
+                                    @endif
+                                </div>
+                            @endif
                             @if($item->winner_id && $item->winner)
                                 <div class="mt-3 pt-3 border-t border-purple-200/50 dark:border-purple-900/40 flex items-center justify-between">
                                     <span class="text-xs font-bold text-emerald-600 dark:text-emerald-400 flex items-center">
@@ -345,7 +364,14 @@
                             </button>
                         @endif
                     @else
-                        @if($item->type_id == 3 && auth()->check() && auth()->user()->karma_points < $item->min_karma)
+                        @if($item->type_id == 3 && $item->raffle_ends_at && $item->raffle_ends_at->isPast())
+                            <button disabled class="w-full py-4 rounded-2xl text-sm font-bold text-gray-500 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 cursor-not-allowed text-center flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Lượt quay thưởng đã kết thúc nhận đăng ký
+                            </button>
+                        @elseif($item->type_id == 3 && auth()->check() && auth()->user()->karma_points < $item->min_karma)
                             <button disabled class="w-full py-4 rounded-2xl text-sm font-bold text-gray-400 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 cursor-not-allowed text-center">
                                 🔒 Cần tối thiểu {{ $item->min_karma }} Karma để tham gia (Bạn có {{ auth()->user()->karma_points }}đ)
                             </button>

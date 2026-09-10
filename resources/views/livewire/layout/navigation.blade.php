@@ -1,6 +1,8 @@
 <?php
 
 use App\Livewire\Actions\Logout;
+use App\Models\ChatMessage;
+use App\Models\ItemRequest;
 use Livewire\Volt\Component;
 
 new class extends Component
@@ -13,6 +15,61 @@ new class extends Component
         $logout();
 
         $this->redirect('/', navigate: true);
+    }
+
+    public function with(): array
+    {
+        if (!auth()->check()) {
+            return [
+                'unreadMessagesCount' => 0,
+                'pendingRequestsCount' => 0,
+                'totalNotifications' => 0,
+                'latestUnreadMessages' => collect(),
+            ];
+        }
+
+        $userId = auth()->id();
+
+        // Count unread chat messages for this user
+        $unreadMessagesCount = ChatMessage::where('is_read', false)
+            ->where('user_id', '!=', $userId)
+            ->whereHas('chatRoom.itemRequest', function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                  ->orWhereHas('item', function ($iq) use ($userId) {
+                      $iq->where('user_id', $userId);
+                  });
+            })
+            ->count();
+
+        // Get recent unread messages with sender info
+        $latestUnreadMessages = $unreadMessagesCount > 0 
+            ? ChatMessage::with(['user', 'chatRoom.itemRequest.item'])
+                ->where('is_read', false)
+                ->where('user_id', '!=', $userId)
+                ->whereHas('chatRoom.itemRequest', function ($q) use ($userId) {
+                    $q->where('user_id', $userId)
+                      ->orWhereHas('item', function ($iq) use ($userId) {
+                          $iq->where('user_id', $userId);
+                      });
+                })
+                ->latest()
+                ->take(4)
+                ->get()
+            : collect();
+
+        // Count pending incoming requests for items owned by this user
+        $pendingRequestsCount = ItemRequest::whereHas('item', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })
+            ->where('request_status_id', 1)
+            ->count();
+
+        return [
+            'unreadMessagesCount' => $unreadMessagesCount,
+            'pendingRequestsCount' => $pendingRequestsCount,
+            'totalNotifications' => $unreadMessagesCount + $pendingRequestsCount,
+            'latestUnreadMessages' => $latestUnreadMessages,
+        ];
     }
 }; ?>
 
@@ -86,7 +143,7 @@ new class extends Component
 
                     @auth
                         <a href="{{ route('dashboard') }}" wire:navigate
-                           class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                           class="inline-flex items-center px-3 lg:px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-200 relative
                                   {{ request()->routeIs('dashboard')
                                       ? 'text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-950/40'
                                       : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
@@ -94,6 +151,11 @@ new class extends Component
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/>
                             </svg>
                             Quản lý
+                            @if($totalNotifications > 0)
+                                <span class="ms-1.5 px-1.5 py-0.2 text-[10px] font-bold rounded-full bg-rose-500 text-white leading-tight">
+                                    {{ $totalNotifications }}
+                                </span>
+                            @endif
                         </a>
 
                         <a href="{{ route('item.create') }}" wire:navigate
@@ -125,6 +187,106 @@ new class extends Component
                 </button>
 
                 @auth
+                    <!-- Notification Bell Dropdown -->
+                    <div class="relative" x-data="{ openNotifications: false }" @click.outside="openNotifications = false" @close.stop="openNotifications = false">
+                        <button @click="openNotifications = !openNotifications"
+                                class="relative p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200 focus:outline-none"
+                                aria-label="Thông báo">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                            </svg>
+
+                            @if($totalNotifications > 0)
+                                <span class="absolute top-1 right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[10px] font-extrabold text-white shadow-sm ring-2 ring-white dark:ring-gray-900 animate-pulse">
+                                    {{ $totalNotifications > 99 ? '99+' : $totalNotifications }}
+                                </span>
+                            @endif
+                        </button>
+
+                        <!-- Notification Dropdown Panel -->
+                        <div x-show="openNotifications"
+                             x-transition:enter="transition ease-out duration-200"
+                             x-transition:enter-start="opacity-0 scale-95"
+                             x-transition:enter-end="opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-150"
+                             x-transition:leave-start="opacity-100 scale-100"
+                             x-transition:leave-end="opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-white dark:bg-gray-800 shadow-2xl border border-gray-100 dark:border-gray-700 py-3 z-50 text-left"
+                             style="display: none;">
+
+                            <!-- Header -->
+                            <div class="px-4 pb-2.5 border-b border-gray-100 dark:border-gray-700 flex items-center justify-between">
+                                <h4 class="text-sm font-bold text-gray-900 dark:text-gray-100 flex items-center">
+                                    <span class="mr-2">🔔</span> Thông báo & Tin nhắn
+                                </h4>
+                                @if($totalNotifications > 0)
+                                    <span class="text-xs px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 font-bold">
+                                        {{ $totalNotifications }} mới
+                                    </span>
+                                @endif
+                            </div>
+
+                            <!-- List -->
+                            <div class="max-h-80 overflow-y-auto divide-y divide-gray-50 dark:divide-gray-700/50">
+                                @if($pendingRequestsCount > 0)
+                                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-start p-3.5 hover:bg-teal-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                                        <div class="w-8 h-8 rounded-xl bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center flex-shrink-0 mr-3 text-sm">
+                                            🎁
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="text-xs font-bold text-gray-900 dark:text-gray-100">
+                                                Có {{ $pendingRequestsCount }} yêu cầu nhận đồ mới
+                                            </p>
+                                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                                                Nhấn để vào trang Quản lý và duyệt yêu cầu người nhận.
+                                            </p>
+                                        </div>
+                                    </a>
+                                @endif
+
+                                @if($latestUnreadMessages->isNotEmpty())
+                                    @foreach($latestUnreadMessages as $msg)
+                                        <a href="{{ route('chat.room', ['roomId' => $msg->chat_room_id]) }}" wire:navigate class="flex items-start p-3.5 hover:bg-blue-50/50 dark:hover:bg-gray-700/50 transition-colors">
+                                            <div class="w-8 h-8 rounded-xl bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold text-xs flex-shrink-0 mr-3">
+                                                {{ substr($msg->user->name ?? '?', 0, 1) }}
+                                            </div>
+                                            <div class="flex-1 min-w-0">
+                                                <div class="flex items-center justify-between">
+                                                    <span class="text-xs font-bold text-gray-900 dark:text-gray-100 truncate">
+                                                        {{ $msg->user->name ?? 'Người dùng' }}
+                                                    </span>
+                                                    <span class="text-[10px] text-gray-400">
+                                                        {{ $msg->created_at->diffForHumans(null, true) }}
+                                                    </span>
+                                                </div>
+                                                <p class="text-xs text-gray-600 dark:text-gray-300 truncate mt-0.5">
+                                                    {{ $msg->message }}
+                                                </p>
+                                            </div>
+                                        </a>
+                                    @endforeach
+                                @endif
+
+                                @if($totalNotifications === 0)
+                                    <div class="py-8 text-center text-gray-400 dark:text-gray-500">
+                                        <svg class="w-8 h-8 mx-auto mb-2 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                        </svg>
+                                        <p class="text-xs">Bạn chưa có thông báo mới</p>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="px-4 pt-2 border-t border-gray-100 dark:border-gray-700 text-center">
+                                <a href="{{ route('dashboard') }}" wire:navigate class="text-xs font-bold text-teal-600 dark:text-teal-400 hover:underline">
+                                    Xem tất cả trong trang Quản lý →
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Karma badge -->
                     <div class="flex items-center px-3 py-1.5 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-700 dark:text-amber-300 text-xs font-bold">
                         <svg class="w-3.5 h-3.5 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -188,6 +350,20 @@ new class extends Component
                     </svg>
                 </button>
 
+                @auth
+                    <!-- Mobile Notification Bell -->
+                    <a href="{{ route('dashboard') }}" wire:navigate class="relative p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200" aria-label="Thông báo">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+                        </svg>
+                        @if($totalNotifications > 0)
+                            <span class="absolute top-1 right-1 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-rose-500 text-[10px] font-extrabold text-white shadow-sm ring-2 ring-white dark:ring-gray-900">
+                                {{ $totalNotifications > 99 ? '99+' : $totalNotifications }}
+                            </span>
+                        @endif
+                    </a>
+                @endauth
+
                 <!-- Hamburger Button -->
                 <button @click="open = !open"
                         class="inline-flex items-center justify-center p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none transition-all duration-200">
@@ -228,9 +404,16 @@ new class extends Component
 
             @auth
                 <a href="{{ route('dashboard') }}" wire:navigate
-                   class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('dashboard') ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
-                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                    Quản lý
+                   class="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('dashboard') ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800' }}">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                        Quản lý
+                    </div>
+                    @if($totalNotifications > 0)
+                        <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-rose-500 text-white">
+                            {{ $totalNotifications }}
+                        </span>
+                    @endif
                 </a>
                 <a href="{{ route('item.create') }}" wire:navigate
                    class="flex items-center px-4 py-3 rounded-xl text-sm font-semibold {{ request()->routeIs('item.create') ? 'bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-300' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800' }}">

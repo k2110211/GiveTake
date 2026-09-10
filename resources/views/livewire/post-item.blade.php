@@ -165,18 +165,35 @@
                     </div>
                 @endif
 
-                <!-- Min Karma for Lucky Draw -->
+                <!-- Min Karma and End Time for Lucky Draw -->
                 @if((int)$type === 3)
-                    <div class="bg-purple-50/10 border border-purple-100 dark:border-purple-900/30 p-5 rounded-2xl animate-fadeIn">
-                        <label for="minKarma" class="block text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-2">Điểm Karma tối thiểu để tham gia <span class="text-rose-500">*</span></label>
-                        <div class="relative max-w-xs">
-                            <input type="number" min="0" max="9999" id="minKarma" wire:model="minKarma" placeholder="0" class="w-full rounded-xl border-purple-200 dark:border-purple-900/40 bg-white dark:bg-gray-900 text-sm focus:border-purple-500 focus:ring focus:ring-purple-200 dark:text-gray-300">
-                            <span class="absolute right-3 top-2.5 text-xs font-bold text-purple-500">Karma</span>
+                    <div class="bg-purple-50/10 border border-purple-100 dark:border-purple-900/30 p-5 rounded-2xl animate-fadeIn space-y-4">
+                        <div>
+                            <label for="minKarma" class="block text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-2">Điểm Karma tối thiểu để tham gia <span class="text-rose-500">*</span></label>
+                            <div class="relative max-w-xs">
+                                <input type="number" min="0" max="9999" id="minKarma" wire:model="minKarma" placeholder="0" class="w-full rounded-xl border-purple-200 dark:border-purple-900/40 bg-white dark:bg-gray-900 text-sm focus:border-purple-500 focus:ring focus:ring-purple-200 dark:text-gray-300">
+                                <span class="absolute right-3 top-2.5 text-xs font-bold text-purple-500">Karma</span>
+                            </div>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+                                Chỉ những thành viên có điểm Karma tích lũy cao hơn hoặc bằng số điểm này mới được quyền bấm tham gia quay thưởng.
+                            </p>
+                            @error('minKarma') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
                         </div>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
-                            Chỉ những thành viên có điểm Karma tích lũy cao hơn hoặc bằng số điểm này mới được quyền bấm tham gia quay thưởng.
-                        </p>
-                        @error('minKarma') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+
+                        <!-- Raffle End Time -->
+                        <div class="pt-4 border-t border-purple-100 dark:border-purple-900/30">
+                            <label for="raffleEndsAt" class="block text-xs font-bold text-purple-700 dark:text-purple-400 uppercase tracking-wider mb-2">
+                                Thời gian kết thúc quay thưởng <span class="text-xs text-gray-400 dark:text-gray-500 font-normal lowercase">(tùy chọn)</span>
+                            </label>
+                            <div class="relative max-w-sm">
+                                <input type="datetime-local" id="raffleEndsAt" wire:model="raffleEndsAt"
+                                       class="w-full rounded-xl border-purple-200 dark:border-purple-900/40 bg-white dark:bg-gray-900 text-sm focus:border-purple-500 focus:ring focus:ring-purple-200 dark:text-gray-300">
+                            </div>
+                            <p class="text-[11px] text-gray-500 dark:text-gray-400 mt-2">
+                                Hệ thống sẽ tự động đóng đăng ký và quay số ngẫu nhiên chọn ra người may mắn nhất khi đến thời điểm này.
+                            </p>
+                            @error('raffleEndsAt') <span class="text-xs text-rose-600 mt-1 block">{{ $message }}</span> @enderror
+                        </div>
                     </div>
                 @endif
             </div>

@@ -227,6 +227,19 @@ class ChatRoom extends Component
  
     public function sendMessage()
     {
+        $executed = \Illuminate\Support\Facades\RateLimiter::attempt(
+            'chat-send:' . auth()->id(),
+            $maxAttempts = 30,
+            function () {},
+            $decaySeconds = 60
+        );
+
+        if (!$executed) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn('chat-send:' . auth()->id());
+            $this->addError('newMessage', "Bạn đang gửi tin nhắn quá nhanh. Vui lòng thử lại sau {$seconds} giây.");
+            return;
+        }
+
         $this->validate([
             'newMessage' => 'required|string|min:1|max:2000'
         ], [
